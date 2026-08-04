@@ -1,0 +1,163 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:ital,wght@0,500;0,600;0,700;0,800;1,600&display=swap');
+@import "tailwindcss";
+
+/* Universal Theme Design System Variables */
+
+/* Default Theme: Deep Obsidian (Dark Theme) */
+:root, [data-theme="obsidian"] {
+  --theme-bg: #0F172A;
+  --theme-surface: #1E293B;
+  --theme-elevated: #334155;
+  --theme-border: #475569;
+  --theme-primary-accent: #38BDF8;
+  --theme-secondary-accent: #818CF8;
+  --theme-success: #4ADE80;
+  --theme-warning: #FBBF24;
+  --theme-danger: #F87171;
+  --theme-text-primary: #F8FAFC;
+  --theme-text-secondary: #CBD5E1;
+  --theme-text-muted: #94A3B8;
+
+  /* Legacy CSS Variable Mappings for Backward Compatibility */
+  --theme-gothic-void: #0F172A;
+  --theme-gothic-velvet: #1E293B;
+  --theme-gothic-ink: #334155;
+  --theme-gothic-sapphire: #1E2B3A;
+  --theme-gothic-amethyst: #38BDF8;
+  --theme-gothic-crimson: #F87171;
+  --theme-gothic-bloom: #4ADE80;
+  --theme-gothic-rose: #CBD5E1;
+  --theme-gothic-silver: #F8FAFC;
+  --theme-accent-amber: #38BDF8;
+  --theme-accent-sapphire: #818CF8;
+  --theme-accent-warning: #FBBF24;
+  --theme-text-muted: #94A3B8;
+  --theme-border-steel: #475569;
+}
+
+/* Modern Slate Theme (Default Light Theme) */
+[data-theme="slate"] {
+  --theme-bg: #F1F5F9;
+  --theme-surface: #FFFFFF;
+  --theme-elevated: #E2E8F0;
+  --theme-border: #CBD5E1;
+  --theme-primary-accent: #1D4ED8;
+  --theme-secondary-accent: #0F766E;
+  --theme-success: #15803D;
+  --theme-warning: #B45309;
+  --theme-danger: #B91C1C;
+  --theme-text-primary: #020617;
+  --theme-text-secondary: #334155;
+  --theme-text-muted: #64748B;
+
+  /* Legacy Mappings */
+  --theme-gothic-void: #F1F5F9;
+  --theme-gothic-velvet: #FFFFFF;
+  --theme-gothic-ink: #E2E8F0;
+  --theme-gothic-sapphire: #E2E8F0;
+  --theme-gothic-amethyst: #1D4ED8;
+  --theme-gothic-crimson: #B91C1C;
+  --theme-gothic-bloom: #15803D;
+  --theme-gothic-rose: #334155;
+  --theme-gothic-silver: #020617;
+  --theme-accent-amber: #1D4ED8;
+  --theme-accent-sapphire: #0F766E;
+  --theme-accent-warning: #B45309;
+  --theme-text-muted: #64748B;
+  --theme-border-steel: #CBD5E1;
+}
+
+/* Warm Sepia Theme (Evening / High-Comfort) */
+[data-theme="sepia"] {
+  --theme-bg: #F3EFE6;
+  --theme-surface: #FCFBF7;
+  --theme-elevated: #E7E0D3;
+  --theme-border: #D3C9B8;
+  --theme-primary-accent: #8C3A00;
+  --theme-secondary-accent: #2D5A44;
+  --theme-success: #235D39;
+  --theme-warning: #8A5000;
+  --theme-danger: #9B1C1C;
+  --theme-text-primary: #1A1815;
+  --theme-text-secondary: #4A443B;
+  --theme-text-muted: #787063;
+
+  /* Legacy Mappings */
+  --theme-gothic-void: #F3EFE6;
+  --theme-gothic-velvet: #FCFBF7;
+  --theme-gothic-ink: #E7E0D3;
+  --theme-gothic-sapphire: #E7E0D3;
+  --theme-gothic-amethyst: #8C3A00;
+  --theme-gothic-crimson: #9B1C1C;
+  --theme-gothic-bloom: #235D39;
+  --theme-gothic-rose: #4A443B;
+  --theme-gothic-silver: #1A1815;
+  --theme-accent-amber: #8C3A00;
+  --theme-accent-sapphire: #2D5A44;
+  --theme-accent-warning: #8A5000;
+  --theme-text-muted: #787063;
+  --theme-border-steel: #D3C9B8;
+}
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+  --font-display: "Plus Jakarta Sans", "Inter", sans-serif;
+  --font-script: "Plus Jakarta Sans", "Inter", sans-serif;
+  --font-ledger: "Inter", sans-serif;
+
+  --color-bg-dark: var(--theme-bg);
+  --color-surface-dark: var(--theme-surface);
+  --color-surface-raised: var(--theme-elevated);
+  --color-surface-hover: var(--theme-elevated);
+  --color-border-dark: var(--theme-border);
+  --color-border-subtle: var(--theme-border);
+
+  --color-electrum: var(--theme-text-primary);
+  --color-pewter-blue: var(--theme-text-secondary);
+  --color-criollo: var(--theme-danger);
+
+  /* Unified theme specification */
+  --color-gothic-void: var(--theme-bg);
+  --color-gothic-velvet: var(--theme-surface);
+  --color-gothic-ink: var(--theme-elevated);
+  --color-gothic-sapphire: var(--theme-surface);
+  --color-gothic-amethyst: var(--theme-primary-accent);
+  --color-gothic-crimson: var(--theme-danger);
+  --color-gothic-bloom: var(--theme-success);
+  --color-gothic-rose: var(--theme-text-secondary);
+  --color-gothic-silver: var(--theme-text-primary);
+}
+
+/* Global body resets */
+body, html {
+  background-color: var(--theme-bg);
+  color: var(--theme-text-primary);
+  font-family: var(--font-sans);
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* Font classes */
+.font-tabular {
+  font-family: "JetBrains Mono", "Inter", monospace;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Scrollbar theme adjustments */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--theme-bg);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--theme-elevated);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--theme-border);
+}
+
+
+

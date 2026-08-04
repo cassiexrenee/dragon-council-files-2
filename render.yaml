@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: dragon-council-workspace
+    env: node
+    region: oregon
+    plan: starter
+    buildCommand: bun run build || npm run build
+    startCommand: bun start || npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        sync: false
+      - key: DISCORD_CLIENT_ID
+        sync: false
+      - key: DISCORD_CLIENT_SECRET
+        sync: false
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: APP_URL
+        sync: false
