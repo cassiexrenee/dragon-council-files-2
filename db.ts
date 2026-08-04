@@ -1,8 +1,9 @@
-import Database from "better-sqlite3";
 import pg from "pg";
 import fs from "fs";
 import path from "path";
 import crypto from "crypto";
+
+let Database: any = null;
 
 // ---------------------------------------------------------------------------
 // Hybrid Persistence Layer (Neon PostgreSQL + SQLite Fallback)
@@ -17,7 +18,7 @@ const dbUrl = process.env.DATABASE_URL || process.env.NEON_DATABASE_URL || proce
 
 let isPostgres = false;
 let pgPool: pg.Pool | null = null;
-let sqliteDb: Database.Database | null = null;
+let sqliteDb: any | null = null;
 
 if (dbUrl) {
   isPostgres = true;
@@ -30,6 +31,14 @@ if (dbUrl) {
   if (!fs.existsSync(DATA_DIR)) {
     fs.mkdirSync(DATA_DIR, { recursive: true });
   }
+
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    Database = require("better-sqlite3");
+  } catch (error) {
+    throw new Error("better-sqlite3 is required for SQLite fallback. Install it or set DATABASE_URL/NEON_DATABASE_URL/POSTGRES_URL.");
+  }
+
   sqliteDb = new Database(path.join(DATA_DIR, "dragon_council.db"));
   sqliteDb.pragma("journal_mode = WAL");
 }
