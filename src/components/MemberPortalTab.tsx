@@ -21,6 +21,8 @@ import {
   Share2
 } from "lucide-react";
 
+import { apiFetch, API_BASE } from "../apiConfig";
+
 interface MemberPortalTabProps {
   players: Player[];
   snapshots: Snapshot[];
@@ -80,7 +82,7 @@ export default function MemberPortalTab({
   const [isClaiming, setIsClaiming] = useState(false);
 
   const refreshSession = () => {
-    fetch("/api/auth/session")
+    apiFetch("/api/auth/session")
       .then((res) => res.json())
       .then((data) => {
         setSession({ user: data.user || null, claimedCharacterId: data.claimedCharacterId || null });
@@ -100,7 +102,8 @@ export default function MemberPortalTab({
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {
       const origin = event.origin;
-      if (!origin.endsWith(".run.app") && !origin.includes("localhost") && !origin.includes("0.0.0.0")) {
+      const expectedOrigin = API_BASE ? new URL(API_BASE).origin : window.location.origin;
+      if (origin !== expectedOrigin && !origin.includes("localhost") && !origin.includes("0.0.0.0")) {
         return;
       }
       if (event.data?.type === "OAUTH_AUTH_SUCCESS") {
@@ -113,7 +116,7 @@ export default function MemberPortalTab({
 
   const handleLoginWithDiscord = async () => {
     try {
-      const response = await fetch("/api/auth/discord/url");
+      const response = await apiFetch("/api/auth/discord/url");
       if (!response.ok) throw new Error("Failed to get Discord authorization URL");
       const { url } = await response.json();
       const authWindow = window.open(url, "discord_oauth_popup", "width=500,height=680");
@@ -127,9 +130,8 @@ export default function MemberPortalTab({
     setClaimError(null);
     setIsClaiming(true);
     try {
-      const res = await fetch("/api/auth/claim", {
+      const res = await apiFetch("/api/auth/claim", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ characterId: selectedPlayerId })
       });
       const data = await res.json();
@@ -159,7 +161,7 @@ export default function MemberPortalTab({
     setClaimError(null);
     setFarmActionError(null);
     setIsFarmsLoading(true);
-    fetch(`/api/farms/${encodeURIComponent(selectedPlayerId)}`)
+    apiFetch(`/api/farms/${encodeURIComponent(selectedPlayerId)}`)
       .then((res) => res.json())
       .then((data) => setFarms(Array.isArray(data.farms) ? data.farms : []))
       .catch((err) => console.warn("Failed to load farm links:", err))
@@ -223,9 +225,8 @@ export default function MemberPortalTab({
     setFarmActionError(null);
 
     try {
-      const res = await fetch("/api/farms", {
+      const res = await apiFetch("/api/farms", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           characterId: selectedPlayerId,
           farmName: farmName.trim(),
@@ -250,7 +251,7 @@ export default function MemberPortalTab({
     const previous = farms;
     setFarms((prev) => prev.filter((f) => f.id !== farmId));
     try {
-      const res = await fetch(`/api/farms/${farmId}`, { method: "DELETE" });
+      const res = await apiFetch(`/api/farms/${farmId}`, { method: "DELETE" });
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
         setFarmActionError(data.error || "Failed to remove farm account.");

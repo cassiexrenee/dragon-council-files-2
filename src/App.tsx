@@ -33,6 +33,7 @@ import LandingTab from "./components/LandingTab";
 import MemberPortalTab from "./components/MemberPortalTab";
 import MigrationReconcilerTab from "./components/MigrationReconcilerTab";
 import { CustomLoadingShowcaseModal } from "./components/CustomLoadingShowcaseModal";
+import { apiFetch, API_BASE } from "./apiConfig";
 
 // Navigation icons
 import { 
@@ -166,14 +167,14 @@ export default function App() {
   const handleLogout = () => {
     setCurrentUser(null);
     setIsProfileOpen(false);
-    fetch("/api/auth/logout", { method: "POST" }).catch((err) =>
+    apiFetch("/api/auth/logout", { method: "POST" }).catch((err) =>
       console.warn("Failed to invalidate session on the server:", err)
     );
   };
 
   const handleLoginWithDiscord = async () => {
     try {
-      const response = await fetch("/api/auth/discord/url");
+      const response = await apiFetch("/api/auth/discord/url");
       if (!response.ok) {
         throw new Error("Failed to get Discord authorization URL");
       }
@@ -197,7 +198,11 @@ export default function App() {
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {
       const origin = event.origin;
-      if (!origin.endsWith(".run.app") && !origin.includes("localhost") && !origin.includes("0.0.0.0")) {
+      // The OAuth popup is served by the API backend, so trust messages from
+      // that backend's own origin (works for any host — Render, Cloud Run,
+      // localhost, etc. — rather than hardcoding one platform's domain).
+      const expectedOrigin = API_BASE ? new URL(API_BASE).origin : window.location.origin;
+      if (origin !== expectedOrigin && !origin.includes("localhost") && !origin.includes("0.0.0.0")) {
         return;
       }
       if (event.data?.type === "OAUTH_AUTH_SUCCESS" && event.data?.user) {
@@ -289,7 +294,7 @@ export default function App() {
       let loadedSessions = initialImportSessions;
 
       try {
-        const response = await fetch("/api/state");
+        const response = await apiFetch("/api/state");
         if (!response.ok) throw new Error(`Server responded with ${response.status}`);
         const { state } = await response.json();
 
@@ -383,7 +388,7 @@ export default function App() {
   // 1b. Hydrate the current Discord identity from the server-verified session
   // (rather than trusting a locally cached, unverifiable copy).
   useEffect(() => {
-    fetch("/api/auth/session")
+    apiFetch("/api/auth/session")
       .then((res) => res.json())
       .then((data) => {
         if (data?.user) {
@@ -403,9 +408,8 @@ export default function App() {
       clearTimeout(stateSaveTimeoutRef.current);
     }
     stateSaveTimeoutRef.current = setTimeout(() => {
-      fetch("/api/state", {
+      apiFetch("/api/state", {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ players, snapshots, overrides, notes, settings, importSessions })
       })
         .then((res) => {
