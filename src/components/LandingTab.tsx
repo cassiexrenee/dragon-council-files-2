@@ -56,10 +56,10 @@ interface LandingTabProps {
 }
 
 export default function LandingTab({
-  players,
-  snapshots,
-  settings,
-  evaluations,
+  players = [],
+  snapshots = [],
+  settings = {},
+  evaluations = [],
   onNavigateToTab,
   onSelectPlayer,
   onApplyForRecruitment
@@ -85,13 +85,14 @@ export default function LandingTab({
 
   // Aggregate stats
   const totalPower = React.useMemo(() => {
-    if (snapshots.length === 0) return 0;
-    const uniquePlayers = new Set(snapshots.map(s => s.playerId)).size || players.length || 1;
-    return snapshots.reduce((acc, s) => acc + (s.currentPower || 0), 0) / (snapshots.length / uniquePlayers || 1);
+    if (!snapshots || snapshots.length === 0) return 0;
+    const uniquePlayers = new Set(snapshots.map(s => s?.playerId)).size || players?.length || 1;
+    return snapshots.reduce((acc, s) => acc + (s?.currentPower || 0), 0) / (snapshots.length / uniquePlayers || 1);
   }, [snapshots, players]);
 
   const totalMerits = React.useMemo(() => {
-    return snapshots.reduce((acc, s) => acc + (s.merits || 0), 0);
+    if (!snapshots) return 0;
+    return snapshots.reduce((acc, s) => acc + (s?.merits || 0), 0);
   }, [snapshots]);
 
   // Instant eligibility evaluation for applicant
@@ -141,38 +142,28 @@ export default function LandingTab({
   const simCompliant = simRatio >= meritTargetPct;
 
   return (
-    <div className="space-y-16 pb-16 text-slate-200">
+    <div className="space-y-16 pb-16 text-[#E0D4F5] font-sans">
       
       {/* 1. HERO SECTION: Royal Council Archive & Beyond the Spreadsheet */}
-      <div className="relative rounded-2xl bg-[#171719] border border-[#364958] p-8 sm:p-12 lg:p-16 shadow-2xl overflow-hidden">
+      <div className="relative rounded-3xl bg-[#130A24] border border-[#4A306D] p-8 sm:p-12 lg:p-16 shadow-[0_0_40px_rgba(74,48,109,0.2)] overflow-hidden">
         
-        {/* Constellation Grid & Radiant Atmosphere */}
-        <div className="absolute top-0 right-0 w-full h-full bg-[radial-gradient(#E7CB9C_1px,transparent_1px)] [background-size:28px_28px] opacity-10 pointer-events-none" />
-        <div className="absolute -top-32 -right-32 w-[500px] h-[500px] bg-[#E7CB9C]/10 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute -bottom-32 -left-32 w-[500px] h-[500px] bg-[#364958]/30 rounded-full blur-3xl pointer-events-none" />
+        {/* Tech Grid & Atmosphere */}
+        <div className="absolute top-0 right-0 w-full h-full bg-[radial-gradient(#7C52AB_1px,transparent_1px)] [background-size:28px_28px] opacity-20 pointer-events-none" />
+        <div className="absolute -top-32 -right-32 w-[500px] h-[500px] bg-[#9D7BCE]/15 rounded-full blur-[100px] pointer-events-none" />
+        <div className="absolute -bottom-32 -left-32 w-[500px] h-[500px] bg-[#EC4899]/10 rounded-full blur-[100px] pointer-events-none" />
 
         <div className="relative z-10 space-y-8 max-w-5xl">
           
-          {/* Header Badges */}
-          <div className="flex flex-wrap items-center gap-3">
-            <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#364958]/40 border border-[#364958] text-slate-300 text-xs font-mono font-medium">
-              <Compass size={14} className="text-amber-300" /> Kingdom #142 Military Telemetry
-            </span>
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-mono font-bold">
-              Active Season {activeSeason}
-            </span>
-          </div>
-
           {/* Main Headline & Subhead */}
           <div className="space-y-4">
-            <h1 className="text-4xl sm:text-6xl lg:text-7xl font-script font-bold text-white tracking-tight leading-[1.1]">
-              Lead with Intelligence, Not Spreadsheets
+            <h1 className="text-4xl sm:text-6xl lg:text-7xl font-bold text-white tracking-tight leading-[1.1] flex items-center gap-4">
+              Lead Your Alliance, Ditch the Spreadsheets <Sparkles className="text-[#F2D48E] hidden md:block" size={48} />
             </h1>
-            <p className="text-xl sm:text-2xl font-script text-[#E7CB9C] tracking-wide font-medium">
-              Dragon Council — Alliance Intelligence & Decision Platform
+            <p className="text-xl sm:text-2xl text-[#F2D48E] tracking-wide font-medium">
+              Dragon Council — A friendly workspace for alliance leaders
             </p>
-            <p className="text-base sm:text-lg text-slate-300 font-ledger leading-relaxed max-w-3xl pt-2">
-              Centralize player analytics, historical records, and performance insights into one strategic workspace designed for alliance leadership.
+            <p className="text-base sm:text-lg text-[#CDBCEB] leading-relaxed max-w-3xl pt-2">
+              Keep track of player progress, history, and daily stats all in one organized place. Spend less time crunching numbers and more time actually playing the game!
             </p>
           </div>
 
@@ -180,10 +171,11 @@ export default function LandingTab({
           <div className="flex flex-wrap items-center gap-4 pt-4">
             <button
               onClick={() => onNavigateToTab("overview")}
-              className="flex items-center gap-3 px-7 py-4 bg-gradient-to-r from-[#E7CB9C] via-[#d4b37d] to-[#c5a168] hover:from-[#f0d6aa] hover:to-[#d4b37d] text-[#171719] font-display font-extrabold text-sm uppercase tracking-wider rounded-xl shadow-[0_0_25px_rgba(231,203,156,0.3)] transition-all cursor-pointer group"
+              className="flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-[#6B4E90] via-[#855CAE] to-[#9D7BCE] hover:from-[#7C52AB] hover:to-[#B594DF] text-white font-bold text-sm uppercase tracking-wider rounded-full shadow-[0_0_25px_rgba(157,123,206,0.4)] transition-all cursor-pointer group border border-[#B594DF]/30"
             >
-              <span>Enter Command Console</span>
-              <ArrowRight size={18} className="group-hover:translate-x-1.5 transition-transform text-[#171719]" />
+              <Sparkle size={18} className="text-[#F2D48E]" />
+              <span>Open Your Workspace</span>
+              <ArrowRight size={18} className="group-hover:translate-x-1.5 transition-transform text-[#F2D48E]" />
             </button>
           </div>
 
@@ -192,30 +184,36 @@ export default function LandingTab({
       </div>
 
       {/* 2. HERO NARRATIVE: Beyond the Spreadsheet */}
-      <div className="p-8 sm:p-12 rounded-2xl bg-[#171719]/90 border border-[#364958] shadow-xl relative overflow-hidden">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+      <div className="p-8 sm:p-12 rounded-3xl bg-[#1A1033]/90 border border-[#4A306D] shadow-[0_0_30px_rgba(30,15,50,0.5)] relative overflow-hidden">
+        {/* Soft background glow */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-[#6B4E90]/10 rounded-full blur-[120px] pointer-events-none" />
+        
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center relative z-10">
           
           <div className="lg:col-span-7 space-y-4">
-            <h2 className="text-3xl sm:text-4xl font-script font-bold text-white">
-              Beyond the Spreadsheet
+            <h2 className="text-3xl sm:text-4xl font-bold text-white flex items-center gap-3">
+              <Sparkles size={32} className="text-[#9D7BCE]" /> Say Goodbye to Data Stress
             </h2>
-            <p className="text-sm sm:text-base text-slate-300 font-ledger leading-relaxed">
-              Competitive kingdoms operate under intense administrative pressure, often resulting in <strong className="text-amber-300">"spreadsheet burnout"</strong> and subjective decision-making based on incomplete context. 
+            <p className="text-sm sm:text-base text-[#CDBCEB] leading-relaxed">
+              Running a big alliance is tough enough without staring at endless rows of data. It's easy to get <strong className="text-[#F472B6]">burnt out</strong> trying to remember everyone's stats, farm accounts, and recent activity. 
             </p>
-            <p className="text-sm sm:text-base text-slate-300 font-ledger leading-relaxed">
-              Dragon Council is the solution — a platform that acts as an <strong className="text-white">active intelligence layer</strong>, unifying data from Farlight exports, DragonStats, and manual records into a centralized, explainable archive. Unlike standard stat trackers, this system is engineered to <strong className="text-[#E7CB9C]">inform leadership, not replace it</strong>, ensuring human officers retain final execution authority.
+            <p className="text-sm sm:text-base text-[#CDBCEB] leading-relaxed">
+              Dragon Council makes it simple. We take all your game exports and organize them into clear, easy-to-read profiles. It's built to give you and your officers <strong className="text-[#F2D48E]">helpful summaries and quick answers</strong>, so you can make confident decisions without the headache.
             </p>
           </div>
 
-          <div className="lg:col-span-5 p-6 rounded-xl bg-[#0F0F12] border border-[#364958]/80 space-y-4">
-            <div className="space-y-3 text-xs font-ledger">
-              <div className="flex items-start gap-3 p-2.5 rounded bg-[#171719] border border-[#364958]/40">
-                <span className="text-red-400 font-bold font-mono">BEFORE</span>
-                <span className="text-slate-400">150 raw spreadsheet rows, lost multi-account context, recency bias & fatigue.</span>
+          <div className="lg:col-span-5 p-6 rounded-2xl bg-[#10081C] border border-[#4A306D]/80 space-y-4 relative">
+            <Sparkle className="absolute -top-3 -right-3 text-[#F2D48E]/70" size={20} />
+            <Sparkle className="absolute -bottom-3 -left-3 text-[#F2D48E]/70" size={20} />
+            
+            <div className="space-y-3 text-xs">
+              <div className="flex items-start gap-3 p-3.5 rounded-xl bg-[#1A1033] border border-[#4A306D]/50">
+                <span className="text-[#F472B6] font-bold font-mono">BEFORE</span>
+                <span className="text-[#A28BB2]">Messy spreadsheets, confusing alt accounts, and spending hours trying to figure out who is who.</span>
               </div>
-              <div className="flex items-start gap-3 p-2.5 rounded bg-[#171719] border border-[#E7CB9C]/30">
-                <span className="text-[#E7CB9C] font-bold font-mono">AFTER</span>
-                <span className="text-slate-200">Structured 5-layer decision pipeline, linked main/farm identities & plain-text advisory queues.</span>
+              <div className="flex items-start gap-3 p-3.5 rounded-xl bg-[#1A1033] border border-[#F2D48E]/40 shadow-[0_0_15px_rgba(242,212,142,0.15)]">
+                <span className="text-[#F2D48E] font-bold font-mono">AFTER</span>
+                <span className="text-[#E0D4F5]">Clean player profiles, automatically linked farm accounts, and easy-to-read alliance summaries.</span>
               </div>
             </div>
           </div>
