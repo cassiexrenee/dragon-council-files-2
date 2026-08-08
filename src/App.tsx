@@ -23,15 +23,15 @@ import {
 
 // Import separate tab views
 import OverviewTab from "./components/OverviewTab";
-import PlayersTab from "./components/PlayersTab";
-import RosterTab from "./components/RosterTab";
-import ReviewTab from "./components/ReviewTab";
-import SettingsTab, { THEME_OPTIONS } from "./components/SettingsTab";
+import PlayersTab from "./pages/PlayersTab";
+import RosterTab from "./pages/RosterTab";
+import ReviewTab from "./pages/ReviewTab";
+import SettingsTab, { THEME_OPTIONS } from "./pages/SettingsTab";
 import ImportTab from "./components/ImportTab";
-import WarLogsTab from "./components/WarLogsTab";
-import LandingTab from "./components/LandingTab";
-import MemberPortalTab from "./components/MemberPortalTab";
-import MigrationReconcilerTab from "./components/MigrationReconcilerTab";
+import WarLogsTab from "./pages/WarLogsTab";
+import LandingTab from "./pages/LandingTab";
+import MemberPortalTab from "./pages/MemberPortalTab";
+import MigrationReconcilerTab from "./pages/MigrationReconcilerTab";
 import { apiFetch, API_BASE } from "./apiConfig";
 
 // Navigation icons
