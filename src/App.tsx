@@ -32,7 +32,6 @@ import WarLogsTab from "./components/WarLogsTab";
 import LandingTab from "./components/LandingTab";
 import MemberPortalTab from "./components/MemberPortalTab";
 import MigrationReconcilerTab from "./components/MigrationReconcilerTab";
-import { CustomLoadingShowcaseModal } from "./components/CustomLoadingShowcaseModal";
 import { apiFetch, API_BASE } from "./apiConfig";
 
 // Navigation icons
@@ -50,7 +49,7 @@ import {
   FileText,
   Download,
   Sliders,
-  Shield,
+  Compass,
   Scroll,
   Home,
   Menu,
@@ -104,7 +103,7 @@ const defaultAllianceSettings: AllianceSettings = {
   updatedAt: new Date().toISOString()
 };
 
-const VALID_TABS = ["landing", "overview", "players", "member", "migration", "roster", "review", "warlogs", "imports", "settings"];
+const VALID_TABS = ["landing", "overview", "players", "member", "roster", "warlogs", "settings"];
 
 function getDeepLinkParams(): { tab: string | null; player: string | null } {
   try {
@@ -127,6 +126,8 @@ export default function App() {
   const deepLink = getDeepLinkParams();
   const [activeTab, setActiveTab] = useState<string>(deepLink.tab || "landing");
   const [selectedPlayerId, setSelectedPlayerId] = useState<string | null>(deepLink.player);
+  const [rosterSubView, setRosterSubView] = useState<"active" | "transitions">("active");
+  const [showImportModal, setShowImportModal] = useState(false);
 
   // User Authentication State
   const [currentUser, setCurrentUser] = useState<{
@@ -138,7 +139,6 @@ export default function App() {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(deepLink.tab === "member");
-  const [isLoaderShowcaseOpen, setIsLoaderShowcaseOpen] = useState(false);
 
   // Editable Council Identity State
   const [profile, setProfile] = useState<{
@@ -727,7 +727,7 @@ export default function App() {
       {/* Mobile Top Header */}
       <div className="md:hidden flex items-center justify-between p-4 bg-[#222831] border-b border-[#4B5563]/30 sticky top-0 z-50">
         <div className="flex items-center gap-2.5">
-          <Shield size={20} className="text-[#D4B26A]" />
+          <Compass size={20} className="text-[#06B6D4]" />
           <div className="font-display tracking-[0.15em] text-xs uppercase text-[#F2F0E8]">
             <span className="block font-bold">Dragon</span>
             <span className="block text-[10px] text-[#C8CCD2]/60 -mt-1">Council</span>
@@ -758,8 +758,8 @@ export default function App() {
         {/* Top Header of Sidebar */}
         <div className="p-4 border-b border-[#4B5563]/30 flex items-center justify-between">
           <div className={`flex items-center gap-3 overflow-hidden ${isSidebarCollapsed ? "md:justify-center md:w-full" : ""}`}>
-            <div className="w-9 h-9 rounded-lg bg-[#2F3743] border border-[#D4B26A]/40 flex items-center justify-center flex-shrink-0 text-[#D4B26A] shadow-[0_0_12px_rgba(212,178,106,0.2)]">
-              <Shield size={20} />
+            <div className="w-9 h-9 rounded-lg bg-[#2F3743] border border-[#06B6D4]/40 flex items-center justify-center flex-shrink-0 text-[#06B6D4] shadow-[0_0_12px_rgba(6,182,212,0.25)]">
+              <Compass size={20} />
             </div>
             {!isSidebarCollapsed && (
               <div className="font-display tracking-[0.15em] text-xs uppercase text-[#F2F0E8] leading-tight">
@@ -788,14 +788,10 @@ export default function App() {
 
           {[
             { id: "landing", label: "Council Hall", icon: <Home size={18} /> },
-            { id: "overview", label: "Command Overview", icon: <LayoutDashboard size={18} /> },
-            { id: "players", label: "Player Dossier", icon: <Users size={18} /> },
+            { id: "overview", label: "Leadership Hub", icon: <LayoutDashboard size={18} /> },
             { id: "member", label: "Account Registry", icon: <UserSquare2 size={18} /> },
-            { id: "migration", label: "Migration Ledger", icon: <Shuffle size={18} /> },
             { id: "roster", label: "Alliance Registry", icon: <TableProperties size={18} /> },
-            { id: "review", label: "Review Queue", icon: <ShieldAlert size={18} /> },
-            { id: "warlogs", label: "War Logs", icon: <Scroll size={18} /> },
-            { id: "imports", label: "Import Manager", icon: <Download size={18} /> },
+            { id: "warlogs", label: "Alliance Chronicle", icon: <Scroll size={18} /> },
             { id: "settings", label: "Settings", icon: <Sliders size={18} /> }
           ].map((navItem) => {
             const isActive = activeTab === navItem.id;
@@ -1045,25 +1041,45 @@ export default function App() {
         )}
 
         {activeTab === "overview" && (
-          <OverviewTab
-            playersCount={players.length}
-            latestSnapshots={activeSnapshots}
-            snapshots={cumulativeSnapshots}
-            classifications={classifications}
-            evaluations={evaluations}
-            settings={settings}
-            onNavigateToTab={setActiveTab}
-            onSelectPlayer={(id) => {
-              setSelectedPlayerId(id);
-              setActiveTab("players");
-            }}
-            notes={notes}
-            overrides={overrides}
-            recommendations={recommendations}
-            onAddNote={handleAddNote}
-            onApplyOverride={handleApplyOverride}
-            onResolveRecommendation={handleResolveRecommendation}
-          />
+          <div className="space-y-8">
+            <OverviewTab
+              playersCount={players.length}
+              latestSnapshots={activeSnapshots}
+              snapshots={cumulativeSnapshots}
+              classifications={classifications}
+              evaluations={evaluations}
+              settings={settings}
+              onNavigateToTab={setActiveTab}
+              onSelectPlayer={(id) => {
+                setSelectedPlayerId(id);
+                setActiveTab("players");
+              }}
+              notes={notes}
+              overrides={overrides}
+              recommendations={recommendations}
+              onAddNote={handleAddNote}
+              onApplyOverride={handleApplyOverride}
+              onResolveRecommendation={handleResolveRecommendation}
+            />
+
+            <div className="pt-2 border-t border-gothic-silver/10">
+              <h2 className="text-lg font-display font-bold text-gothic-silver mb-4 mt-6">Advisory Queue</h2>
+              <ReviewTab
+                players={players}
+                snapshots={cumulativeSnapshots}
+                classifications={classifications}
+                evaluations={evaluations}
+                recommendations={recommendations}
+                overrides={overrides}
+                onApplyOverride={handleApplyOverride}
+                onRemoveOverride={handleRemoveOverride}
+                onResolveRecommendation={handleResolveRecommendation}
+                onSelectPlayer={setSelectedPlayerId}
+                onNavigateToTab={setActiveTab}
+                settings={settings}
+              />
+            </div>
+          </div>
         )}
 
         {activeTab === "players" && (
@@ -1096,44 +1112,62 @@ export default function App() {
           />
         )}
 
-        {activeTab === "migration" && (
-          <MigrationReconcilerTab
-            snapshots={cumulativeSnapshots}
-            importSessions={importSessions}
-            players={players}
-            settings={settings}
-          />
-        )}
-
         {activeTab === "roster" && (
-          <RosterTab
-            players={players}
-            snapshots={cumulativeSnapshots}
-            classifications={classifications}
-            evaluations={evaluations}
-            recommendations={recommendations}
-            importSessions={importSessions}
-            onSelectPlayer={setSelectedPlayerId}
-            onNavigateToTab={setActiveTab}
-            settings={settings}
-          />
-        )}
+          <div className="space-y-4">
+            {/* Active Members / Arrivals & Departures toggle + Import trigger */}
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div className="inline-flex p-1 rounded-lg bg-gothic-ink border border-gothic-silver/20 gap-1">
+                <button
+                  onClick={() => setRosterSubView("active")}
+                  className={`px-4 py-1.5 rounded-md text-xs font-mono font-semibold transition-all cursor-pointer ${
+                    rosterSubView === "active"
+                      ? "bg-gothic-silver text-[#111113]"
+                      : "text-gothic-rose/60 hover:text-gothic-silver"
+                  }`}
+                >
+                  Active Members
+                </button>
+                <button
+                  onClick={() => setRosterSubView("transitions")}
+                  className={`px-4 py-1.5 rounded-md text-xs font-mono font-semibold transition-all cursor-pointer ${
+                    rosterSubView === "transitions"
+                      ? "bg-gothic-silver text-[#111113]"
+                      : "text-gothic-rose/60 hover:text-gothic-silver"
+                  }`}
+                >
+                  Arrivals & Departures
+                </button>
+              </div>
 
-        {activeTab === "review" && (
-          <ReviewTab
-            players={players}
-            snapshots={cumulativeSnapshots}
-            classifications={classifications}
-            evaluations={evaluations}
-            recommendations={recommendations}
-            overrides={overrides}
-            onApplyOverride={handleApplyOverride}
-            onRemoveOverride={handleRemoveOverride}
-            onResolveRecommendation={handleResolveRecommendation}
-            onSelectPlayer={setSelectedPlayerId}
-            onNavigateToTab={setActiveTab}
-            settings={settings}
-          />
+              <button
+                onClick={() => setShowImportModal(true)}
+                className="flex items-center gap-2 px-4 py-2 bg-gothic-silver hover:bg-white text-[#111113] font-mono font-bold rounded-lg text-xs transition-all cursor-pointer shadow-md"
+              >
+                <Download size={13} /> Import Snapshot
+              </button>
+            </div>
+
+            {rosterSubView === "active" ? (
+              <RosterTab
+                players={players}
+                snapshots={cumulativeSnapshots}
+                classifications={classifications}
+                evaluations={evaluations}
+                recommendations={recommendations}
+                importSessions={importSessions}
+                onSelectPlayer={setSelectedPlayerId}
+                onNavigateToTab={setActiveTab}
+                settings={settings}
+              />
+            ) : (
+              <MigrationReconcilerTab
+                snapshots={cumulativeSnapshots}
+                importSessions={importSessions}
+                players={players}
+                settings={settings}
+              />
+            )}
+          </div>
         )}
 
         {activeTab === "warlogs" && (
@@ -1144,16 +1178,6 @@ export default function App() {
               setActiveTab("players");
             }}
             onNavigateToTab={setActiveTab}
-          />
-        )}
-
-        {activeTab === "imports" && (
-          <ImportTab
-            importSessions={importSessions}
-            onImportSnapshots={handleImportSnapshots}
-            onDeleteSession={handleDeleteSession}
-            onRenameSession={handleRenameSession}
-            snapshots={cumulativeSnapshots}
           />
         )}
 
@@ -1175,11 +1199,31 @@ export default function App() {
       </footer>
       </div>
 
-      {/* Interactive Custom Loading Bar Showcase Modal */}
-      <CustomLoadingShowcaseModal
-        isOpen={isLoaderShowcaseOpen}
-        onClose={() => setIsLoaderShowcaseOpen(false)}
-      />
+      {/* Import Snapshot Modal */}
+      {showImportModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+          <div className="w-full max-w-6xl max-h-[90vh] overflow-y-auto bg-gothic-velvet border border-gothic-silver/30 rounded-xl shadow-2xl">
+            <div className="sticky top-0 z-10 flex items-center justify-between px-6 py-4 bg-gothic-velvet border-b border-gothic-silver/20">
+              <h2 className="text-sm font-bold text-gothic-silver font-display uppercase tracking-wider">Import Snapshot</h2>
+              <button
+                onClick={() => setShowImportModal(false)}
+                className="p-1.5 rounded-lg hover:bg-gothic-ink text-gothic-rose/60 hover:text-gothic-silver transition-all cursor-pointer"
+              >
+                <X size={18} />
+              </button>
+            </div>
+            <div className="p-6">
+              <ImportTab
+                importSessions={importSessions}
+                onImportSnapshots={handleImportSnapshots}
+                onDeleteSession={handleDeleteSession}
+                onRenameSession={handleRenameSession}
+                snapshots={cumulativeSnapshots}
+              />
+            </div>
+          </div>
+        </div>
+      )}
 
     </div>
   );
