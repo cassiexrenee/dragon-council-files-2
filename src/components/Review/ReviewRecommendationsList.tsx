@@ -2,7 +2,7 @@ import React from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { AlertTriangle, CheckCircle } from "lucide-react";
 import { Recommendation, PlayerClassification, Snapshot, RecommendationType } from "../../types";
-import { getLastActivityInfo } from "../../utils/Analytics";
+import { getLastActivityInfo } from "../../utils/analytics";
 
 interface ReviewRecommendationsListProps {
   pendingRecs: Recommendation[];

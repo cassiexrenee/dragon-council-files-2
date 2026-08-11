@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { ArrowLeftRight, UserPlus, UserMinus, Shield, Search } from "lucide-react";
 import { Player, Snapshot, AllianceSettings } from "../types";
-import { formatWholeNumber } from "../utils/Analytics";
+import { formatWholeNumber } from "../utils/analytics";
 
 interface MigrationReconcilerTabProps {
   players: Player[];

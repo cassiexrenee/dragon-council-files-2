@@ -9,7 +9,7 @@ import {
   PlayerNote,
   AllianceSettings
 } from "../types";
-import { getAggregatedPlayerSnapshot, getLastActivityInfo } from "../utils/Analytics";
+import { getAggregatedPlayerSnapshot, getLastActivityInfo } from "../utils/analytics";
 import PlayerDirectorySidebar from "../components/Players/PlayerDirectorySidebar";
 import PlayerProfileDetail from "../components/Players/PlayerProfileDetail";
 

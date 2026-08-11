@@ -1,7 +1,7 @@
 import React from "react";
 import { Search, Filter } from "lucide-react";
 import { Player, Snapshot, PerformanceEvaluation, PerformanceTier } from "../../types";
-import { formatWholeNumber } from "../../utils/Analytics";
+import { formatWholeNumber } from "../../utils/analytics";
 
 interface PlayerDirectorySidebarProps {
   filteredPlayers: Player[];

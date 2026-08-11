@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { Search } from 'lucide-react';
-import { Pagination } from './ui/Pagination';
+import { Pagination } from './ui/pagination';
 
 interface Column<T> {
   key: keyof T | string;
