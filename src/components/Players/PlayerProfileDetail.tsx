@@ -3,7 +3,7 @@ import { Activity, TrendingUp, FileText, Save, Trash2 } from "lucide-react";
 import { Player, Snapshot, PerformanceEvaluation, PerformanceTier, PlayerNote, AllianceSettings } from "../../types";
 import { formatWholeNumber } from "../../utils/Analytics";
 
-interface PlayerProfileDetailProps {
+export interface PlayerProfileDetailProps {
   activePlayer: Player;
   playerSnapshots: Snapshot[];
   latestSnapshot?: Snapshot;
@@ -11,6 +11,9 @@ interface PlayerProfileDetailProps {
   playerLastActivity: any;
   playerNotes: PlayerNote[];
   settings?: AllianceSettings;
+  override?: any; 
+  onApplyOverride: (playerId: string, role: any, reason: string) => void; 
+  onRemoveOverride: (playerId: string) => void; 
   onAddNote: (playerId: string, content: string) => void;
   onDeleteNote: (noteId: string) => void;
 }
@@ -23,6 +26,9 @@ export default function PlayerProfileDetail({
   playerLastActivity,
   playerNotes,
   settings,
+  override,
+  onApplyOverride,
+  onRemoveOverride,
   onAddNote,
   onDeleteNote
 }: PlayerProfileDetailProps) {
@@ -86,13 +92,19 @@ export default function PlayerProfileDetail({
               <span className={`text-[10px] font-mono font-bold uppercase px-2.5 py-1 rounded border ${getTierColor(playerEvaluation?.performanceTier)}`}>
                 {getTierLabel(playerEvaluation?.performanceTier)}
               </span>
+              {/* Council Override Indicator */}
+              {override && (
+                <span className="text-[10px] font-mono font-bold uppercase px-2.5 py-1 rounded border text-purple-300 bg-purple-500/10 border-purple-500/20">
+                  Council Override Active
+                </span>
+              )}
             </div>
             <p className="text-xs font-mono text-gothic-rose/60 mt-1">
               Character ID: <span className="font-bold text-gothic-silver">{activePlayer.characterId}</span>
             </p>
             <div className="flex items-center gap-2 mt-2">
-              <span className={`text-[10px] font-mono font-semibold px-2 py-0.5 rounded flex items-center gap-1.5 ${playerLastActivity.isInactive ? "bg-red-950/40 text-red-300 border border-red-500/30" : "bg-emerald-950/40 text-emerald-300 border border-emerald-500/30"}`}>
-                <Activity size={12} /> Last Telemetry: {playerLastActivity.summary}
+              <span className={`text-[10px] font-mono font-semibold px-2 py-0.5 rounded flex items-center gap-1.5 ${playerLastActivity?.isInactive ? "bg-red-950/40 text-red-300 border border-red-500/30" : "bg-emerald-950/40 text-emerald-300 border border-emerald-500/30"}`}>
+                <Activity size={12} /> Last Telemetry: {playerLastActivity?.summary || "Unknown"}
               </span>
             </div>
           </div>

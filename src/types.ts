@@ -163,3 +163,18 @@ export interface AllianceSettings {
   };
   updatedAt: string;
 }
+export type ClassificationStatus = "STAY" | "REVIEW" | "LEAVE" | "VANGUARD";
+export type ActivityState = "ACTIVE" | "WARNING" | "INACTIVE";
+export type EvaluationResultStatus = "PASS" | "FAIL" | "EXCEPTIONAL";
+
+export interface RoleRequirementItem {
+  role: string;
+  requirement: string;
+  met: boolean;
+}
+
+export interface ActivityEvidenceItem {
+  date: string;
+  action: string;
+  value: number;
+}

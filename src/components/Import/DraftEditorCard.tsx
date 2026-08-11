@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Trash2, Plus, AlertTriangle, Calendar, FileCode, FileSpreadsheet, FileText, ChevronUp, ChevronDown, Map, Check } from "lucide-react";
 import { Snapshot, ImportSession } from "../../types";
-import { FileDraft } from "../ImportTab";
+import { FileDraft } from "../../pages/ImportTab";
 import { formatBytes, parseFarlightFilenameInfo, parseNumericValue } from "../../utils/importParsers";
 
 interface DraftEditorCardProps {
@@ -138,7 +138,7 @@ export default function DraftEditorCard({
               <div key={rawHeader} className="flex items-center justify-between p-2 rounded bg-gothic-void border border-gothic-silver/20 text-xs font-mono">
                 <span className="text-gothic-rose/50 truncate max-w-[120px] font-bold">{rawHeader}</span>
                 <select
-                  value={canonical}
+                  value={canonical as string}
                   onChange={(e) => onHeaderMapChange(draft.id, rawHeader, e.target.value)}
                   className="bg-gothic-ink border border-gothic-silver/20 text-[11px] text-gothic-rose/90 px-1.5 py-0.5 rounded outline-none cursor-pointer"
                 >
