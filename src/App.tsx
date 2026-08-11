@@ -222,3 +222,4 @@ export default function App() {
       {/* Extracted Navigation Sidebar */}
       <Sidebar 
         activeTab={activeTab}
+      />
