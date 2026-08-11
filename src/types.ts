@@ -1,12 +1,12 @@
-export type AccountRole = "FIGHTER" | "SUPPORT" | "FARM" | "NEEDS_REVIEW";
+export type AccountRole = "FIGHTER" | "SUPPORT" | "FARM" | "NEEDS_REVIEW" | "INACTIVE";
 
 export type PerformanceTier = "EXCEEDS" | "MEETS" | "BELOW" | "INACTIVE";
 
-export type RecommendationType = "KEEP" | "SUPPORT" | "MONITOR" | "REMOVE" | "MANUAL_REVIEW";
+export type RecommendationType = "KEEP" | "SUPPORT" | "MONITOR" | "REMOVE" | "MANUAL_REVIEW" | "KEEP_AS_FARM";
 
-export type EligibilityStatus = "ELIGIBLE" | "INELIGIBLE" | "PENDING";
+export type EligibilityStatus = "ELIGIBLE" | "INELIGIBLE" | "PENDING" | "BELOW_BASELINE" | "LIKELY_FARM" | "LIKELY_INACTIVE";
 
-export type ComplianceStatus = "COMPLIANT" | "EXEMPLARY" | "NON_COMPLIANT" | "PARTIAL";
+export type ComplianceStatus = "COMPLIANT" | "EXEMPLARY" | "NON_COMPLIANT" | "PARTIAL" | "NOT_APPLICABLE";
 
 export interface Player {
   characterId: string;
@@ -42,6 +42,7 @@ export interface Snapshot {
 export interface PlayerClassification {
   id: string;
   playerId: string;
+  snapshotId?: string | null;
   role: AccountRole;
   confidence: number;
   explanation: {
@@ -54,8 +55,19 @@ export interface PlayerClassification {
 export interface PerformanceEvaluation {
   id: string;
   playerId: string;
+  classificationId?: string;
   performanceTier: PerformanceTier;
   complianceStatus: ComplianceStatus;
+  eligibilityStatus?: EligibilityStatus;
+  performanceScore?: number;
+  complianceMetrics?: {
+    meritRatioPassed: boolean;
+    deathsPassed: boolean;
+  };
+  customScores?: {
+    merits?: number;
+    gathering?: number;
+  };
   metrics: {
     powerScore: number;
     meritScore: number;
@@ -72,6 +84,7 @@ export interface Recommendation {
   reason: {
     summary: string;
     drivers: string[];
+    evidence?: string[];
   };
   status: "PENDING" | "ACCEPTED" | "REJECTED" | "OVERRIDDEN";
   createdAt: string;
@@ -139,6 +152,9 @@ export interface AllianceSettings {
       deathsMin: number;
       activityRequired: boolean;
     };
+    weights?: Record<string, any>;
+    thresholds?: Record<string, any>;
+    customScoringWeights?: Record<string, any>;
   };
   updatedAt: string;
 }

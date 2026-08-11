@@ -9,7 +9,7 @@ import {
   AllianceSettings,
   ImportSession
 } from "../types";
-import { getAggregatedPlayerSnapshot } from "../utils/analytics";
+import { getAggregatedPlayerSnapshot } from "../utils/Analytics";
 import RosterFilterBar from "../components/Roster/RosterFilterBar";
 import RosterTable from "../components/Roster/RosterTable";
 

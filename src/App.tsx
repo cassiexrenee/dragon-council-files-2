@@ -57,12 +57,12 @@ import { useAnalytics } from "./hooks/useAnalytics";
 import { apiFetch, API_BASE } from "./apiConfig";
 
 // Layout & Navigation
-import Sidebar from "./components/sidebar";
+import Sidebar from "./components/Sidebar";
 
 // Tabs & Views
 import OverviewTab from "./pages/OverviewTab";
-import PlayersTab from "./pages/playerstab";
-import RosterTab from "./pages/rostertab";
+import PlayersTab from "./pages/PlayerTtab";
+import RosterTab from "./pages/RosterTab";
 import ReviewTab from "./pages/ReviewTab";
 import SettingsTab from "./pages/SettingsTab";
 // ImportTab removed (module not present); if needed, re-add with correct path

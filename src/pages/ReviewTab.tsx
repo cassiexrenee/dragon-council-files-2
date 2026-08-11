@@ -10,7 +10,7 @@ import {
   AccountRole,
   AllianceSettings
 } from "../types";
-import { getAggregatedPlayerSnapshot, formatWholeNumber } from "../utils/analytics";
+import { getAggregatedPlayerSnapshot, formatWholeNumber } from "../utils/Analytics";
 import ReviewNeedsList from "../components/Review/ReviewNeedsList";
 import ReviewRecommendationsList from "../components/Review/ReviewRecommendationsList";
 import ReviewOverridesList from "../components/Review/ReviewOverridesList";

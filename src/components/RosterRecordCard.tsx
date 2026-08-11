@@ -1,7 +1,7 @@
 import React from "react";
 import { User, Shield, Award, ArrowRight } from "lucide-react";
 import { Snapshot, PerformanceTier } from "../types";
-import { formatWholeNumber } from "../utils/analytics";
+import { formatWholeNumber } from "../utils/Analytics";
 
 interface RosterRecordCardProps {
   playerId: string;

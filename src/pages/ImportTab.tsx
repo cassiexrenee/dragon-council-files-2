@@ -7,7 +7,7 @@ import {
 import * as XLSX from "xlsx";
 import { Snapshot, Player, ImportSession } from "../types";
 import { CustomLoadingOverlay } from "./CustomLoadingBar";
-import SessionManager from "../components/Import/SessionManager";
+import SessionManager from "../components/import/SessionManager";
 import DraftEditorCard from "../components/Import/DraftEditorCard";
 import { 
   CANONICAL_FIELDS, extractDateFromFilename, parseFarlightFilenameInfo, 

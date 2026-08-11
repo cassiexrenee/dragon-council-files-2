@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link2, Plus, Trash2, AlertCircle, ShieldCheck } from "lucide-react";
-import { formatWholeNumber } from "../../utils/analytics";
+import { formatWholeNumber } from "../../utils/Analytics";
 
 interface FarmManagerSectionProps {
   farms: { id: string; mainPlayerId: string; farmName: string; farmPower: number }[];

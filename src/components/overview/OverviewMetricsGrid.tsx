@@ -1,7 +1,7 @@
 import React from "react";
 import { Users, Zap, ShieldAlert, Award } from "lucide-react";
 import { Snapshot, PerformanceEvaluation } from "../../types";
-import { formatWholeNumber } from "../../utils/analytics";
+import { formatWholeNumber } from "../../utils/Analytics";
 
 interface OverviewMetricsGridProps {
   playersCount: number;

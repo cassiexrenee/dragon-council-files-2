@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Shield, Users, ArrowRight, Sparkles, Scroll, Award, CheckCircle2 } from "lucide-react";
 import { Player, Snapshot, AllianceSettings, PerformanceEvaluation } from "../types";
-import { formatWholeNumber } from "../utils/analytics";
+import { formatWholeNumber } from "../utils/Analytics";
 import RecruitmentModal from "../components/Landing/RecruitmentModal";
 
 interface LandingTabProps {
