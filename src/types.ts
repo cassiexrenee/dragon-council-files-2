@@ -63,6 +63,7 @@ export interface PerformanceEvaluation {
   complianceMetrics?: {
     meritRatioPassed: boolean;
     deathsPassed: boolean;
+    powerPassed?: boolean;
   };
   customScores?: {
     merits?: number;
