@@ -411,3 +411,13 @@ export default {
   getFarmLinkById,
   deleteFarmLink
 };
+
+export async function requireSession(req: any) {
+  const sessionId = req.headers.cookie
+    ?.split("; ")
+    .find((row: string) => row.startsWith("dc_session="))
+    ?.split("=")[1];
+
+  if (!sessionId) return null;
+  return await getSession(sessionId);
+}

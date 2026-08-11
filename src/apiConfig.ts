@@ -1,24 +1,34 @@
-// Base URL for the backend API. In the split Vercel/Render deployment, the
-// frontend and backend live on different origins, so this must point at the
-// Render service's public URL (set via VITE_API_URL at build time on Vercel).
-// Left empty for local/combined dev, where the Express server also serves
-// the frontend and relative "/api/..." paths resolve to the same origin.
-export const API_BASE: string = (import.meta as any).env?.VITE_API_URL?.replace(/\/$/, "") || "";
+// Resolve API Base URL depending on environment
+export const API_BASE = (() => {
+  const envUrl = process.env.VITE_API_URL || (import.meta as any).env?.VITE_API_URL;
+  if (envUrl && envUrl !== "MY_API_URL" && envUrl.startsWith("http")) {
+    return envUrl.replace(/\/$/, "");
+  }
+  // Fallback to relative path if served from same origin, or default localhost port for local dev
+  if (typeof window !== "undefined" && window.location.hostname !== "localhost" && window.location.hostname !== "127.0.0.1") {
+    return "";
+  }
+  return "http://localhost:3001";
+})();
 
-export function apiUrl(path: string): string {
-  return `${API_BASE}${path.startsWith("/") ? path : `/${path}`}`;
-}
+/**
+ * Customized fetch wrapper that automatically prefixes API requests with API_BASE
+ * and ensures cross-origin cookie credentials ('include') are preserved for Discord OAuth sessions.
+ */
+export async function apiFetch(endpoint: string, options: RequestInit = {}): Promise<Response> {
+  const cleanEndpoint = endpoint.startsWith("/") ? endpoint : `/${endpoint}`;
+  const url = `${API_BASE}${cleanEndpoint}`;
 
-// Default fetch options for every API call — `credentials: "include"` is
-// required so the session cookie is sent cross-origin between the Vercel
-// frontend and the Render backend (same-origin dev works fine with this too).
-export function apiFetch(path: string, options: RequestInit = {}): Promise<Response> {
-  return fetch(apiUrl(path), {
-    credentials: "include",
+  const defaultHeaders: Record<string, string> = {
+    "Content-Type": "application/json",
+    ...(options.headers as Record<string, string> || {})
+  };
+
+  const response = await fetch(url, {
     ...options,
-    headers: {
-      ...(options.body ? { "Content-Type": "application/json" } : {}),
-      ...(options.headers || {})
-    }
+    headers: defaultHeaders,
+    credentials: "include" // Critical for passing session cookies across split deployments
   });
+
+  return response;
 }

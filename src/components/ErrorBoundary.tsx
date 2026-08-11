@@ -1,101 +1,57 @@
-import React from "react";
-import { AlertOctagon, RotateCcw, Trash2 } from "lucide-react";
+import React, { Component, ErrorInfo, ReactNode } from "react";
+import { ShieldAlert, RefreshCw } from "lucide-react";
 
-interface ErrorBoundaryProps {
-  children: React.ReactNode;
+interface Props {
+  children: ReactNode;
 }
 
-interface ErrorBoundaryState {
+interface State {
   hasError: boolean;
-  error: Error | null;
+  error?: Error;
 }
 
-export default class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundaryState> {
-  constructor(props: ErrorBoundaryProps) {
-    super(props);
-    this.state = { hasError: false, error: null };
-  }
+export default class ErrorBoundary extends Component<Props, State> {
+  public state: State = {
+    hasError: false
+  };
 
-  static getDerivedStateFromError(error: Error): ErrorBoundaryState {
+  public static getDerivedStateFromError(error: Error): State {
     return { hasError: true, error };
   }
 
-  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-    console.error("Dragon Council encountered an unrecoverable render error:", error, errorInfo);
+  public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
+    console.error("Uncaught runtime error captured in Dragon Council ErrorBoundary:", error, errorInfo);
   }
 
-  handleReload = () => {
-    window.location.reload();
-  };
-
-  handleResetLocalData = () => {
-    const confirmed = window.confirm(
-      "This will clear all locally stored alliance data (roster, snapshots, settings, notes) on this device and reload the app. This cannot be undone. Continue?"
-    );
-    if (!confirmed) return;
-
-    const keys = [
-      "dragon_council_players",
-      "dragon_council_snapshots",
-      "dragon_council_overrides",
-      "dragon_council_notes",
-      "dragon_council_settings",
-      "dragon_council_sessions",
-      "dragon_council_war_logs",
-      "dragon_council_theme",
-      "dragon_council_officer_profile",
-      "discord_officer_user"
-    ];
-    keys.forEach((k) => {
-      try {
-        localStorage.removeItem(k);
-      } catch (_) {}
-    });
-    window.location.reload();
-  };
-
-  render() {
+  public render() {
     if (this.state.hasError) {
       return (
-        <div className="min-h-screen w-full flex items-center justify-center bg-[#0F172A] p-6">
-          <div className="max-w-lg w-full bg-[#1E293B] border border-[#475569] rounded-xl p-8 shadow-2xl text-center space-y-5">
-            <div className="w-14 h-14 rounded-full bg-red-500/10 border border-red-500/30 flex items-center justify-center mx-auto">
-              <AlertOctagon size={28} className="text-red-400" />
+        <div className="min-h-screen bg-gothic-void text-gothic-silver flex items-center justify-center p-6 font-sans">
+          <div className="max-w-md w-full bg-gothic-velvet border border-red-500/30 rounded-2xl p-8 space-y-6 text-center shadow-2xl relative overflow-hidden">
+            <div className="absolute top-0 left-0 w-full h-1 bg-red-500 animate-pulse" />
+            
+            <div className="w-16 h-16 bg-red-950/40 border border-red-500/30 text-red-400 rounded-2xl flex items-center justify-center mx-auto shadow-inner">
+              <ShieldAlert size={32} />
             </div>
 
             <div className="space-y-2">
-              <h1 className="text-lg font-bold text-slate-50">Something Went Wrong</h1>
-              <p className="text-sm text-slate-400 leading-relaxed">
-                Dragon Council hit an unexpected error and couldn't continue rendering this page.
-                Your alliance data on this device has not been affected.
+              <h2 className="text-lg font-bold font-display uppercase tracking-wider text-gothic-silver">Council Sector Fault Detected</h2>
+              <p className="text-xs text-gothic-rose/80 font-mono leading-relaxed">
+                An unexpected exception occurred within the frontend rendering pipeline. The ledger state has been isolated to prevent corruption.
               </p>
-              {this.state.error?.message && (
-                <p className="text-xs font-mono text-slate-500 bg-[#0F172A] border border-[#334155] rounded-lg p-3 text-left break-words">
-                  {this.state.error.message}
-                </p>
+              {this.state.error && (
+                <div className="p-3 bg-gothic-ink border border-gothic-silver/20 rounded-lg text-[10px] font-mono text-red-300 text-left overflow-x-auto max-h-24">
+                  {this.state.error.toString()}
+                </div>
               )}
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
-              <button
-                onClick={this.handleReload}
-                className="flex items-center justify-center gap-2 px-5 py-2.5 bg-sky-500 hover:bg-sky-400 text-slate-950 font-semibold text-sm rounded-lg transition-colors cursor-pointer"
-              >
-                <RotateCcw size={15} />
-                Reload App
-              </button>
-              <button
-                onClick={this.handleResetLocalData}
-                className="flex items-center justify-center gap-2 px-5 py-2.5 bg-transparent hover:bg-[#334155] text-slate-400 hover:text-slate-200 border border-[#475569] font-semibold text-sm rounded-lg transition-colors cursor-pointer"
-              >
-                <Trash2 size={15} />
-                Clear Local Data & Reload
-              </button>
-            </div>
-
-            <p className="text-[11px] text-slate-500 pt-1">
-              If reloading doesn't resolve this, only use "Clear Local Data" as a last resort — it will remove your locally stored roster, settings, and notes on this device.
-            </p>
+            <button
+              onClick={() => window.location.reload()}
+              className="w-full py-3 bg-gothic-silver hover:bg-white text-[#111113] font-mono font-bold text-xs rounded-xl transition-all cursor-pointer flex items-center justify-center gap-2 shadow-lg"
+            >
+              <RefreshCw size={14} /> Reload Council Command Interface
+            </button>
           </div>
         </div>
       );
