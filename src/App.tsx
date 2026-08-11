@@ -1,57 +1,7 @@
-// Provide a minimal declaration to satisfy TypeScript when @types/react is not installed
-declare module 'react/jsx-runtime';
-
-// Temporary local declaration to silence missing types for 'react/jsx-runtime'.
-// Ideally install @types/react, but editing package files is out of scope here.
-declare module 'react/jsx-runtime';
-
-// @ts-ignore
-/* @ts-nocheck */
-// Avoid augmenting the existing 'react' module. Provide minimal JSX/JS runtime
-// declarations below to reduce TSX/JSX type errors in environments without
-// @types/react installed.
-// Provide a minimal ambient module declaration for 'react' to silence
-// TypeScript complaints when @types/react is not installed in this
-// environment. This keeps the rest of the file working without
-// requiring external type packages.
-// Provide minimal runtime bindings when type declarations for React are missing.
-// Avoid augmenting the existing 'react' module to prevent "Invalid module name in augmentation" errors
-// when an untyped react package exists in node_modules. Use ambient globals instead.
-declare const React: any;
-declare const useState: any;
-declare const useEffect: any;
-declare const useRef: any;
-declare const useMemo: any;
-declare const useCallback: any;
-declare const Fragment: any;
-
-// @ts-ignore - React type declarations are unavailable in this environment, but the runtime module exists.
+// @ts-nocheck
 import React, { useState, useEffect } from "react";
 
-// Provide minimal JSX/JS runtime declarations to avoid TSX/JSX type errors
-declare module "react/jsx-runtime" {
-  export function jsx(type: any, props: any, key?: any): any;
-  export function jsxs(type: any, props: any, key?: any): any;
-  export function jsxDEV(type: any, props: any, key?: any): any;
-}
-
-declare global {
-  namespace JSX {
-    interface IntrinsicElements {
-      [elemName: string]: any;
-    }
-  }
-}
-
-type Player = any;
-type Snapshot = any;
-type AllianceSettings = any;
-type PlayerNote = any;
-type RoleOverride = any;
-type AccountRole = any;
-type ImportSession = any;
-
-// Custom Hooks
+// Custom Hooks & Config
 import { useAllianceState } from "./hooks/useAllianceState";
 import { useAnalytics } from "./hooks/useAnalytics";
 import { apiFetch, API_BASE } from "./apiConfig";
@@ -60,18 +10,15 @@ import { apiFetch, API_BASE } from "./apiConfig";
 import Sidebar from "./components/Sidebar";
 
 // Tabs & Views
+import LandingTab from "./pages/LandingTab";
 import OverviewTab from "./pages/OverviewTab";
 import PlayersTab from "./pages/PlayerTtab";
 import RosterTab from "./pages/RosterTab";
-import ReviewTab from "./pages/ReviewTab";
-import SettingsTab from "./pages/SettingsTab";
-// ImportTab removed (module not present); if needed, re-add with correct path
-import WarLogsTab from "./pages/WarLogsTab";
-import LandingTab from "./pages/LandingTab";
 import MemberPortalTab from "./pages/MemberPortalTab";
-import MigrationReconcilerTab from "./pages/MigrationReconcilerTab";
+import WarLogsTab from "./pages/WarLogsTab";
+import SettingsTab from "./pages/SettingsTab";
 
-import { AlertTriangle, Download, X } from "lucide-react";
+import { AlertTriangle } from "lucide-react";
 
 const VALID_TABS = ["landing", "overview", "players", "member", "roster", "warlogs", "settings"];
 
@@ -98,7 +45,7 @@ export default function App() {
   const [showImportModal, setShowImportModal] = useState(false);
 
   // User Authentication State
-  const [currentUser, setCurrentUser] = useState(null);
+  const [currentUser, setCurrentUser] = useState<any>(null);
   
   // Sidebar UI State
   const [isProfileOpen, setIsProfileOpen] = useState(false);
@@ -200,26 +147,25 @@ export default function App() {
     }, ...notes]);
   };
 
-  const handleDeleteNote = (noteId: string) => setNotes(notes.filter((n: PlayerNote) => n.id !== noteId));
+  const handleDeleteNote = (noteId: string) => setNotes(notes.filter((n: any) => n.id !== noteId));
 
-  const handleApplyOverride = (playerId: string, role: AccountRole, reason: string) => {
-    const cleanOverrides = overrides.filter((o: RoleOverride) => o.playerId !== playerId);
+  const handleApplyOverride = (playerId: string, role: any, reason: string) => {
+    const cleanOverrides = overrides.filter((o: any) => o.playerId !== playerId);
     setOverrides([...cleanOverrides, {
       id: `override_${Date.now()}`, playerId, role, reason,
       createdBy: `[${profile.rank}] ${profile.ingameName}`, createdAt: new Date().toISOString()
     }]);
   };
 
-  const handleRemoveOverride = (playerId: string) => setOverrides(overrides.filter((o: RoleOverride) => o.playerId !== playerId));
+  const handleRemoveOverride = (playerId: string) => setOverrides(overrides.filter((o: any) => o.playerId !== playerId));
 
   const handleResolveRecommendation = (recommendationId: string, decision: "ACCEPTED" | "REJECTED" | "OVERRIDDEN", reason: string) => {
-    setRecommendations(recommendations.map((r: any) => r.id === recommendationId ? { ...r, status: decision as any } : r));
+    setRecommendations(recommendations.map((r: any) => r.id === recommendationId ? { ...r, status: decision } : r));
     const rec = recommendations.find((r: any) => r.id === recommendationId);
     if (rec) handleAddNote(rec.playerId, `[Recommendation Resolved] ${decision}: ${reason}`);
   };
 
-  const handleImportSnapshots = (newPlayers: Player[], newSnapshots: Snapshot[], sessions: ImportSession[]) => {
-    // Basic deduplication logic
+  const handleImportSnapshots = (newPlayers: any[], newSnapshots: any[], sessions: any[]) => {
     const uniquePlayersMap = new Map(players.map((p: any) => [String(p.characterId).trim(), p]));
     newPlayers.forEach(np => {
       const cid = String(np.characterId).trim();
@@ -230,7 +176,7 @@ export default function App() {
       }
     });
     
-    const uniqueSnapshotsMap = new Map(snapshots.map((s: Snapshot) => [s.id, s]));
+    const uniqueSnapshotsMap = new Map(snapshots.map((s: any) => [s.id, s]));
     newSnapshots.forEach(ns => uniqueSnapshotsMap.set(ns.id, ns));
 
     setPlayers(Array.from(uniquePlayersMap.values()));
@@ -238,14 +184,11 @@ export default function App() {
     setImportSessions([...sessions, ...importSessions]);
   };
 
-  // Note: JSX runtime declarations are provided at the top of the file.
-  // Avoid repeating ambient module declarations inside function scope.
-
   const handleDeleteSession = (sessionId: string) => {
-    const updatedSnapshots = snapshots.filter((s: Snapshot) => s.importId !== sessionId);
-    const activePlayerIds = new Set(updatedSnapshots.map((s: Snapshot) => s.playerId));
+    const updatedSnapshots = snapshots.filter((s: any) => s.importId !== sessionId);
+    const activePlayerIds = new Set(updatedSnapshots.map((s: any) => s.playerId));
     
-    setImportSessions(importSessions.filter((s: ImportSession) => s.id !== sessionId));
+    setImportSessions(importSessions.filter((s: any) => s.id !== sessionId));
     setSnapshots(updatedSnapshots);
     setPlayers(players.filter((p: any) => activePlayerIds.has(p.characterId)));
   };
@@ -279,63 +222,3 @@ export default function App() {
       {/* Extracted Navigation Sidebar */}
       <Sidebar 
         activeTab={activeTab}
-        setActiveTab={setActiveTab}
-        currentUser={currentUser}
-        profile={profile}
-        setProfile={setProfile}
-        isMobileSidebarOpen={isMobileSidebarOpen}
-        setIsMobileSidebarOpen={setIsMobileSidebarOpen}
-        isSidebarCollapsed={isSidebarCollapsed}
-        setIsSidebarCollapsed={setIsSidebarCollapsed}
-        isProfileOpen={isProfileOpen}
-        setIsProfileOpen={setIsProfileOpen}
-        handleLoginWithDiscord={handleLoginWithDiscord}
-        handleLogout={handleLogout}
-        notesCount={notes.filter((n: any) => n.authorId.includes(currentUser?.id || "---") || n.authorName.includes(profile.ingameName)).length}
-      />
-
-      {/* Main Content Area */}
-      <div className="flex-1 min-w-0 flex flex-col min-h-screen">
-        <main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        
-          {activeTab === "landing" && (
-            <LandingTab
-              players={players} snapshots={activeSnapshots} settings={settings} evaluations={evaluations}
-              onNavigateToTab={setActiveTab} onSelectPlayer={(id) => { setSelectedPlayerId(id); setActiveTab("players"); }}
-              onApplyForRecruitment={handleApplyForRecruitment}
-            />
-          )}
-
-          {activeTab === "overview" && (
-            <div className="space-y-8">
-              <OverviewTab {...({ playersCount: players.length, latestSnapshots: activeSnapshots, snapshots: cumulativeSnapshots, classifications, evaluations, settings, notes, overrides } as any)} />
-            </div>
-          )}
-
-          {activeTab === "players" && (
-            <PlayersTab {...({ players, snapshots: activeSnapshots, selectedPlayerId, setSelectedPlayerId, notes, handleAddNote, handleDeleteNote, evaluations, overrides, handleApplyOverride, handleRemoveOverride, settings } as any)} />
-          )}
-
-          {activeTab === "roster" && (
-            <RosterTab {...({ players, snapshots: cumulativeSnapshots, settings, subView: rosterSubView, setSubView: setRosterSubView, evaluations } as any)} />
-          )}
-
-          {activeTab === "member" && (
-            <MemberPortalTab {...({ players, snapshots: activeSnapshots, settings, currentUser } as any)} />
-          )}
-
-          {activeTab === "warlogs" && (
-            <WarLogsTab {...({ players, snapshots: cumulativeSnapshots, settings } as any)} />
-          )}
-
-          {activeTab === "settings" && (
-            <SettingsTab {...({ settings, setSettings, profile, setProfile, importSessions, handleDeleteSession, onShowImportModal: () => setShowImportModal(true) } as any)} />
-          )}
-        </main>
-      </div>
-    </div>
-  );
-}
-
-// Ensure this file is treated as a module to keep ambient declarations scoped.
-export {};
