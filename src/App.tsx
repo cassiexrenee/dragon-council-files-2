@@ -220,6 +220,7 @@ export default function App() {
       )}
 
       {/* Extracted Navigation Sidebar */}
-      <Sidebar 
-        activeTab={activeTab}
-      />
+      <Sidebar activeTab={activeTab} />
+      </div>
+  );
+}
