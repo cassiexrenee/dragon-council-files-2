@@ -1,16 +1,20 @@
 import React, { useState } from "react";
 import { LayoutDashboard } from "lucide-react";
-import { Player, Snapshot, PerformanceEvaluation, AllianceSettings } from "../types";
+// FIX: Added PlayerClassification and Recommendation to the import list
+import { Player, Snapshot, PerformanceEvaluation, AllianceSettings, PlayerClassification, Recommendation } from "../types";
 import { apiFetch } from "../apiConfig";
 import OverviewMetricsGrid from "../components/Overview/OverviewMetricsGrid";
 import OverviewAIAdvisorCard from "../components/Overview/OverviewAIAdvisorCard";
 import OverviewQueueSummary from "../components/Overview/OverviewQueueSummary";
 import OverviewQueueList from "../components/Overview/OverviewQueueList";
 
+// FIX: Added the missing props to the interface
 interface OverviewTabProps {
   players: Player[];
   snapshots: Snapshot[];
   evaluations: PerformanceEvaluation[];
+  classifications: PlayerClassification[]; 
+  recommendations: Recommendation[]; 
   settings: AllianceSettings;
   onSelectPlayer: (id: string) => void;
   onNavigateToTab: (tab: string) => void;
@@ -20,6 +24,8 @@ export default function OverviewTab({
   players,
   snapshots,
   evaluations,
+  classifications, // FIX: Destructured the new props
+  recommendations,
   settings,
   onSelectPlayer,
   onNavigateToTab
@@ -46,6 +52,10 @@ export default function OverviewTab({
       setIsGeneratingBrief(false);
     }
   };
+
+  // FIX: Safely extract the current season's power baseline to pass to the Summary component
+  const activeSeason = settings.configuration?.activeSeason || "S3";
+  const powerBaseline = settings.configuration?.seasonalPowerBaselines?.[activeSeason] || 0;
 
   return (
     <div className="space-y-6 pb-12 font-sans">
@@ -75,15 +85,19 @@ export default function OverviewTab({
         onGenerateBrief={handleGenerateBrief}
       />
 
+      {/* FIX: Passed classifications, recommendations, and powerBaseline instead of evaluations */}
       <OverviewQueueSummary
+        classifications={classifications}
+        recommendations={recommendations}
         snapshots={snapshots}
-        evaluations={evaluations}
+        powerBaseline={powerBaseline}
       />
 
+      {/* FIX: Passed classifications and recommendations instead of evaluations/players */}
       <OverviewQueueList
-        players={players}
+        classifications={classifications}
+        recommendations={recommendations}
         snapshots={snapshots}
-        evaluations={evaluations}
         onSelectPlayer={onSelectPlayer}
         onNavigateToTab={onNavigateToTab}
       />

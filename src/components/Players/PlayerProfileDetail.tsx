@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Activity, TrendingUp, FileText, Save, Trash2 } from "lucide-react";
 import { Player, Snapshot, PerformanceEvaluation, PerformanceTier, PlayerNote, AllianceSettings } from "../../types";
-import { formatWholeNumber } from "../../utils/analytics";
+import { formatWholeNumber } from "../../utils/Analytics";
 
 interface PlayerProfileDetailProps {
   activePlayer: Player;

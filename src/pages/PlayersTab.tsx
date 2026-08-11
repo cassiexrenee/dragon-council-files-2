@@ -7,12 +7,14 @@ import {
   PerformanceEvaluation,
   Recommendation,
   PlayerNote,
-  AllianceSettings
+  AllianceSettings,
+  RoleOverride // FIX: Added missing type
 } from "../types";
-import { getAggregatedPlayerSnapshot, getLastActivityInfo } from "../utils/analytics";
+import { getAggregatedPlayerSnapshot, getLastActivityInfo } from "../utils/Analytics";
 import PlayerDirectorySidebar from "../components/Players/PlayerDirectorySidebar";
 import PlayerProfileDetail from "../components/Players/PlayerProfileDetail";
 
+// FIX: Renamed and added missing props to match App.tsx mapping
 interface PlayersTabProps {
   players: Player[];
   snapshots: Snapshot[];
@@ -20,10 +22,13 @@ interface PlayersTabProps {
   evaluations: PerformanceEvaluation[];
   recommendations: Recommendation[];
   notes: PlayerNote[];
+  overrides?: RoleOverride[];
   selectedPlayerId: string | null;
-  onSelectPlayer: (id: string | null) => void;
-  onAddNote: (playerId: string, content: string) => void;
-  onDeleteNote: (noteId: string) => void;
+  setSelectedPlayerId: (id: string | null) => void; 
+  handleAddNote: (playerId: string, content: string) => void; 
+  handleDeleteNote: (noteId: string) => void; 
+  handleApplyOverride?: (override: RoleOverride) => void; 
+  handleRemoveOverride?: (playerId: string) => void; 
   settings?: AllianceSettings;
   onNavigateToTab?: (tab: string) => void;
 }
@@ -34,10 +39,13 @@ export default function PlayersTab({
   evaluations,
   recommendations,
   notes,
+  overrides = [], // FIX: Destructured new props
   selectedPlayerId,
-  onSelectPlayer,
-  onAddNote,
-  onDeleteNote,
+  setSelectedPlayerId,
+  handleAddNote,
+  handleDeleteNote,
+  handleApplyOverride,
+  handleRemoveOverride,
   settings,
   onNavigateToTab
 }: PlayersTabProps) {
@@ -68,9 +76,9 @@ export default function PlayersTab({
   
   React.useEffect(() => {
     if (activePlayer && selectedPlayerId !== activePlayer.characterId) {
-      onSelectPlayer(activePlayer.characterId);
+      setSelectedPlayerId(activePlayer.characterId); // FIX: Updated function call
     }
-  }, [activePlayer, selectedPlayerId, onSelectPlayer]);
+  }, [activePlayer, selectedPlayerId, setSelectedPlayerId]);
 
   if (!activePlayer) {
     return (
@@ -104,9 +112,12 @@ export default function PlayersTab({
   const playerLastActivity = getLastActivityInfo(playerSnapshots);
   const playerNotes = notes.filter((n) => n.playerId === activePlayer.characterId)
     .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+    
+  // FIX: Identify if the current player has an active override
+  const activeOverride = overrides.find(o => o.playerId === activePlayer.characterId);
 
-  const handleAddNote = (playerId: string, content: string) => {
-    onAddNote(playerId, content);
+  const handleAddNoteInternal = (playerId: string, content: string) => {
+    handleAddNote(playerId, content); // FIX: Updated function call
     setFeedbackMsg(`✓ Officer note appended for ${activePlayer.currentName}. Record saved to ledger.`);
     setTimeout(() => setFeedbackMsg(null), 8000);
   };
@@ -124,7 +135,7 @@ export default function PlayersTab({
         <PlayerDirectorySidebar
           filteredPlayers={filteredPlayers}
           activePlayer={activePlayer}
-          onSelectPlayer={(id) => onSelectPlayer(id)}
+          onSelectPlayer={(id) => setSelectedPlayerId(id)} // FIX: Updated function call
           searchQuery={searchQuery}
           setSearchQuery={setSearchQuery}
           tierFilter={tierFilter}
@@ -144,8 +155,11 @@ export default function PlayersTab({
           playerLastActivity={playerLastActivity}
           playerNotes={playerNotes}
           settings={settings}
-          onAddNote={handleAddNote}
-          onDeleteNote={onDeleteNote}
+          override={activeOverride} // FIX: Passed override down
+          onAddNote={handleAddNoteInternal}
+          onDeleteNote={handleDeleteNote} // FIX: Updated function call
+          onApplyOverride={handleApplyOverride} // FIX: Passed override control down
+          onRemoveOverride={handleRemoveOverride} // FIX: Passed override control down
         />
       </div>
     </div>

@@ -55,6 +55,7 @@ export interface PlayerClassification {
 export interface PerformanceEvaluation {
   id: string;
   playerId: string;
+  snapshotId?: string;
   classificationId?: string;
   performanceTier: PerformanceTier;
   complianceStatus: ComplianceStatus;
@@ -64,10 +65,12 @@ export interface PerformanceEvaluation {
     meritRatioPassed: boolean;
     deathsPassed: boolean;
     powerPassed?: boolean;
+    activityPassed?: boolean;
   };
   customScores?: {
     merits?: number;
     gathering?: number;
+    deaths?: number;
   };
   metrics: {
     powerScore: number;
@@ -81,6 +84,7 @@ export interface Recommendation {
   id: string;
   playerId: string;
   classificationId: string;
+  evaluationId?: string;
   recommendation: RecommendationType;
   reason: {
     summary: string;

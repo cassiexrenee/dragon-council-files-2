@@ -6,8 +6,21 @@ import {
 } from "lucide-react";
 import * as XLSX from "xlsx";
 import { Snapshot, Player, ImportSession } from "../types";
-import { CustomLoadingOverlay } from "./CustomLoadingBar";
+
+// Corrected component paths
+import { CustomLoadingOverlay } from "../components/CustomLoadingBar"; 
 import SessionManager from "../components/Import/SessionManager";
+import DraftEditorCard from "../components/Import/DraftEditorCard";
+
+// Consolidated parser imports
+import { 
+  CANONICAL_FIELDS, extractDateFromFilename, parseFarlightFilenameInfo, 
+  sanitizeDateString, normalizeHeader, buildSnapshotsFromRaw, parseNumericValue 
+} from "../utils/importParsers";
+
+interface ImportTabProps {
+// ... rest of your code remains exactly the same
+} from "../utils/importParsers";
 import DraftEditorCard from "../components/Import/DraftEditorCard";
 import { 
   CANONICAL_FIELDS, extractDateFromFilename, parseFarlightFilenameInfo, 

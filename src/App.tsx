@@ -12,7 +12,7 @@ import Sidebar from "./components/Sidebar";
 // Tabs & Views
 import LandingTab from "./pages/LandingTab";
 import OverviewTab from "./pages/OverviewTab";
-import PlayersTab from "./pages/PlayerTtab";
+import PlayersTab from "./pages/PlayersTab";
 import RosterTab from "./pages/RosterTab";
 import MemberPortalTab from "./pages/MemberPortalTab";
 import WarLogsTab from "./pages/WarLogsTab";

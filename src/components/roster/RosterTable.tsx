@@ -1,7 +1,7 @@
 import React from "react";
 import { ArrowUpDown, ArrowRight, CheckCircle } from "lucide-react";
 import { Snapshot, PerformanceTier } from "../../types";
-import { getLastActivityInfo } from "../../utils/analytics";
+import { getLastActivityInfo } from "../../utils/Analytics";
 
 interface RosterTableProps {
   sortedRows: Array<{

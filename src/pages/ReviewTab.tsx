@@ -10,11 +10,12 @@ import {
   AccountRole,
   AllianceSettings
 } from "../types";
-import { getAggregatedPlayerSnapshot, formatWholeNumber } from "../utils/analytics";
+import { getAggregatedPlayerSnapshot, formatWholeNumber } from "../utils/Analytics";
 import ReviewNeedsList from "../components/Review/ReviewNeedsList";
 import ReviewRecommendationsList from "../components/Review/ReviewRecommendationsList";
 import ReviewOverridesList from "../components/Review/ReviewOverridesList";
 
+// FIX: Aligned prop names with App.tsx controller standard
 interface ReviewTabProps {
   players: Player[];
   snapshots: Snapshot[];
@@ -22,10 +23,10 @@ interface ReviewTabProps {
   evaluations: PerformanceEvaluation[];
   recommendations: Recommendation[];
   overrides: RoleOverride[];
-  onApplyOverride: (playerId: string, role: AccountRole, reason: string) => void;
-  onRemoveOverride: (playerId: string) => void;
-  onResolveRecommendation: (recommendationId: string, decision: "ACCEPTED" | "REJECTED" | "OVERRIDDEN", reason: string) => void;
-  onSelectPlayer: (id: string) => void;
+  handleApplyOverride: (playerId: string, role: AccountRole, reason: string) => void;
+  handleRemoveOverride: (playerId: string) => void;
+  handleResolveRecommendation: (recommendationId: string, decision: "ACCEPTED" | "REJECTED" | "OVERRIDDEN", reason: string) => void;
+  setSelectedPlayerId: (id: string) => void;
   onNavigateToTab: (tab: string) => void;
   settings?: AllianceSettings;
 }
@@ -37,10 +38,10 @@ export default function ReviewTab({
   evaluations,
   recommendations,
   overrides,
-  onApplyOverride,
-  onRemoveOverride,
-  onResolveRecommendation,
-  onSelectPlayer,
+  handleApplyOverride, // FIX: Destructured correct name
+  handleRemoveOverride, // FIX: Destructured correct name
+  handleResolveRecommendation, // FIX: Destructured correct name
+  setSelectedPlayerId, // FIX: Destructured correct name
   onNavigateToTab,
   settings
 }: ReviewTabProps) {
@@ -79,7 +80,7 @@ export default function ReviewTab({
   const handleResolveNeedsReview = (playerId: string) => {
     if (!resolveReason.trim()) return;
     const pName = getPlayerName(playerId);
-    onApplyOverride(playerId, resolvedRole, `Resolved Needs Review: ${resolveReason.trim()}`);
+    handleApplyOverride(playerId, resolvedRole, `Resolved Needs Review: ${resolveReason.trim()}`); // FIX: Updated call
     setResolvingPlayerId(null);
     setResolveReason("");
     setReviewFeedback(`✓ Classification resolved for ${pName} (${resolvedRole}). Saved to council ledger.`);
@@ -89,7 +90,7 @@ export default function ReviewTab({
   const handleResolveRec = (rec: Recommendation, decision: "ACCEPTED" | "REJECTED") => {
     const pName = getPlayerName(rec.playerId);
     const reasonText = recDecisionReason.trim() || `Officer reviewed and ${decision.toLowerCase()} recommendation.`;
-    onResolveRecommendation(rec.id, decision, reasonText);
+    handleResolveRecommendation(rec.id, decision, reasonText); // FIX: Updated call
     setReviewingRecId(null);
     setRecDecisionReason("");
     setReviewFeedback(`✓ Recommendation ${decision.toLowerCase()} for ${pName}. Audit log updated.`);
@@ -160,7 +161,7 @@ export default function ReviewTab({
             needsReviewItems={needsReviewItems}
             getPlayerName={getPlayerName}
             getPowerStr={getPowerStr}
-            onSelectPlayer={onSelectPlayer}
+            onSelectPlayer={setSelectedPlayerId} // FIX: Updated mapping
             onNavigateToTab={onNavigateToTab}
             resolvingPlayerId={resolvingPlayerId}
             setResolvingPlayerId={setResolvingPlayerId}
@@ -180,7 +181,7 @@ export default function ReviewTab({
             snapshots={snapshots}
             getPlayerName={getPlayerName}
             getPowerStr={getPowerStr}
-            onSelectPlayer={onSelectPlayer}
+            onSelectPlayer={setSelectedPlayerId} // FIX: Updated mapping
             onNavigateToTab={onNavigateToTab}
             reviewingRecId={reviewingRecId}
             setReviewingRecId={setReviewingRecId}
@@ -196,7 +197,7 @@ export default function ReviewTab({
             activeOverrides={activeOverrides}
             getPlayerName={getPlayerName}
             getPowerStr={getPowerStr}
-            onRemoveOverride={onRemoveOverride}
+            onRemoveOverride={handleRemoveOverride} // FIX: Updated mapping
             onNavigateToTab={onNavigateToTab}
             playersCount={players.length}
           />

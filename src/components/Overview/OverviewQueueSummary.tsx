@@ -1,7 +1,7 @@
 import React from "react";
 import { Download, ShieldAlert, CheckCircle, AlertTriangle, Users } from "lucide-react";
 import { PlayerClassification, Recommendation, Snapshot } from "../../types";
-import { formatWholeNumber } from "../../utils/analytics";
+import { formatWholeNumber } from "../../utils/Analytics";
 
 interface OverviewQueueSummaryProps {
   classifications: PlayerClassification[];

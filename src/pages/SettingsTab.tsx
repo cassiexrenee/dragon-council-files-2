@@ -44,18 +44,29 @@ export const THEME_OPTIONS: ThemeOption[] = [
   }
 ];
 
+// FIX: Aligned setSettings with App.tsx and added missing props to satisfy TypeScript
 interface SettingsTabProps {
   settings: AllianceSettings;
-  onUpdateSettings: (newSettings: AllianceSettings) => void;
+  setSettings: (newSettings: AllianceSettings) => void;
   activeTheme?: string;
   onUpdateTheme?: (theme: string) => void;
+  profile?: any;
+  setProfile?: any;
+  importSessions?: any[];
+  handleDeleteSession?: (id: string) => void;
+  onShowImportModal?: () => void;
 }
 
 export default function SettingsTab({
   settings,
-  onUpdateSettings,
+  setSettings, // FIX: Destructured the corrected function name
   activeTheme = "obsidian",
-  onUpdateTheme
+  onUpdateTheme,
+  profile,
+  setProfile,
+  importSessions,
+  handleDeleteSession,
+  onShowImportModal
 }: SettingsTabProps) {
   const [currentTheme, setCurrentTheme] = useState<string>(activeTheme);
   const [activeProfile, setActiveProfile] = useState(settings.activeProfile);
@@ -118,7 +129,7 @@ export default function SettingsTab({
       updatedAt: new Date().toISOString(),
     };
 
-    onUpdateSettings(updated);
+    setSettings(updated); // FIX: Successfully tied into App.tsx controller
     setSaveSuccess(true);
     setTimeout(() => setSaveSuccess(false), 7500);
   };

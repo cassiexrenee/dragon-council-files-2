@@ -1,6 +1,6 @@
 import React from "react";
 import { Search } from "lucide-react";
-import { formatWholeNumber } from "../../utils/analytics";
+import { formatWholeNumber } from "../../utils/Analytics";
 
 interface RosterFilterBarProps {
   search: string;

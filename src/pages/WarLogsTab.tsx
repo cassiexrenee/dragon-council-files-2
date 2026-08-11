@@ -14,19 +14,28 @@ import {
   ArrowRight,
   Sparkles
 } from "lucide-react";
-import { WarLogEntry, Player } from "../types";
+import { WarLogEntry, Player, Snapshot, AllianceSettings } from "../types"; // FIX: Added missing types
 import WarLogStatsSummary from "../components/WarLogs/WarLogStatsSummary";
 import WarLogModal from "../components/WarLogs/WarLogModal";
 
+// FIX: Aligned interface with App.tsx payload and standard prop naming
 interface WarLogsTabProps {
-  players: Player[];
-  onSelectPlayer?: (characterId: string) => void;
+  players?: Player[];
+  snapshots?: Snapshot[];
+  settings?: AllianceSettings;
+  setSelectedPlayerId?: (characterId: string) => void;
   onNavigateToTab?: (tab: string) => void;
 }
 
 export const initialWarLogs: WarLogEntry[] = [];
 
-export default function WarLogsTab({ players, onSelectPlayer, onNavigateToTab }: WarLogsTabProps) {
+export default function WarLogsTab({ 
+  players = [], // FIX: Default array to prevent undefined crashes
+  snapshots = [], 
+  settings, 
+  setSelectedPlayerId, 
+  onNavigateToTab 
+}: WarLogsTabProps) {
   const [logs, setLogs] = useState<WarLogEntry[]>(() => {
     try {
       const saved = localStorage.getItem("dragon_council_war_logs");
@@ -248,10 +257,10 @@ export default function WarLogsTab({ players, onSelectPlayer, onNavigateToTab }:
                           {log.actor}
                         </span>
 
-                        {matchedPlayer && onSelectPlayer && onNavigateToTab && (
+                        {matchedPlayer && setSelectedPlayerId && onNavigateToTab && ( // FIX: Updated function reference
                           <button
                             onClick={() => {
-                              onSelectPlayer(matchedPlayer.characterId);
+                              setSelectedPlayerId(matchedPlayer.characterId); // FIX: Trigger standard routing func
                               onNavigateToTab("players");
                             }}
                             className="text-[10px] text-[#D4B26A] hover:text-white font-mono bg-[#D4B26A]/15 hover:bg-[#D4B26A]/30 px-2 py-0.5 rounded border border-[#D4B26A]/40 transition-all flex items-center gap-1 cursor-pointer"

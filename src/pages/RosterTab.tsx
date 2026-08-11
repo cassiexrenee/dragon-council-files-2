@@ -9,30 +9,35 @@ import {
   AllianceSettings,
   ImportSession
 } from "../types";
-import { getAggregatedPlayerSnapshot } from "../utils/analytics";
+import { getAggregatedPlayerSnapshot } from "../utils/Analytics";
 import RosterFilterBar from "../components/Roster/RosterFilterBar";
 import RosterTable from "../components/Roster/RosterTable";
 
+// FIX: Updated interface to handle missing arrays, missing navigation hooks, and new subView props from App.tsx
 interface RosterTabProps {
   players: Player[];
   snapshots: Snapshot[];
-  classifications: PlayerClassification[];
-  evaluations: PerformanceEvaluation[];
-  recommendations: Recommendation[];
+  classifications?: PlayerClassification[]; 
+  evaluations?: PerformanceEvaluation[];
+  recommendations?: Recommendation[];
   importSessions?: ImportSession[];
-  onSelectPlayer: (id: string) => void;
-  onNavigateToTab: (tab: string) => void;
+  setSelectedPlayerId?: (id: string) => void; // FIX: Aligned name with App.tsx
+  onNavigateToTab?: (tab: string) => void;
   settings?: AllianceSettings;
+  subView?: string; // FIX: Added missing prop from App.tsx
+  setSubView?: (view: string) => void; // FIX: Added missing prop from App.tsx
 }
 
 export default function RosterTab({
-  players,
-  snapshots,
-  evaluations,
-  recommendations,
-  onSelectPlayer,
+  players = [],
+  snapshots = [],
+  evaluations = [], // FIX: Default array prevents undefined crash
+  recommendations = [], // FIX: Default array prevents undefined crash
+  setSelectedPlayerId,
   onNavigateToTab,
-  settings
+  settings,
+  subView,
+  setSubView
 }: RosterTabProps) {
   const [search, setSearch] = useState("");
   const [tierFilter, setTierFilter] = useState<string>("ALL");
@@ -48,7 +53,7 @@ export default function RosterTab({
     const playerSnaps = snapshots.filter((s) => s.playerId === p.characterId);
     const aggregatedSnap = playerSnaps.length > 0 ? getAggregatedPlayerSnapshot(playerSnaps) : null;
     const evaluation = evaluations.find((e) => e.playerId === p.characterId);
-    const recommendation = recommendations.find((r) => r.playerId === p.characterId);
+    const recommendation = recommendations.find((r) => r.playerId === p.characterId); // FIX: Safe execution
 
     return {
       player: p,
@@ -126,6 +131,15 @@ export default function RosterTab({
     document.body.removeChild(link);
   };
 
+  // FIX: Safely wrap navigation functions to prevent runtime crashes if omitted by App.tsx
+  const handleSelectPlayerSafe = (id: string) => {
+    if (setSelectedPlayerId) setSelectedPlayerId(id);
+  };
+
+  const handleNavigateSafe = (tab: string) => {
+    if (onNavigateToTab) onNavigateToTab(tab);
+  };
+
   return (
     <div className="space-y-6 pb-12 font-sans">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-gothic-silver/20 pb-4">
@@ -164,8 +178,8 @@ export default function RosterTab({
         sortedRows={sortedRows}
         snapshots={snapshots}
         toggleSort={toggleSort}
-        onSelectPlayer={onSelectPlayer}
-        onNavigateToTab={onNavigateToTab}
+        onSelectPlayer={handleSelectPlayerSafe} // FIX: Bound to safe wrapper
+        onNavigateToTab={handleNavigateSafe} // FIX: Bound to safe wrapper
         playersCount={players.length}
       />
     </div>

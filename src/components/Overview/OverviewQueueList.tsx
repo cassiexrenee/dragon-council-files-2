@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { ArrowRight, AlertTriangle, CheckCircle, ShieldAlert } from "lucide-react";
 import { PlayerClassification, Recommendation, Snapshot, Player } from "../../types";
-import { formatWholeNumber } from "../../utils/analytics";
+import { formatWholeNumber } from "../../utils/Analytics";
 
 interface OverviewQueueListProps {
   classifications: PlayerClassification[];
