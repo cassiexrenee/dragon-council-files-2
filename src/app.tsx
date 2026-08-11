@@ -1,14 +1,13 @@
 // @ts-ignore
 import React, { useState, useEffect } from "react";
-import { 
-  Player, 
-  Snapshot, 
-  AllianceSettings, 
-  PlayerNote, 
-  RoleOverride,
-  AccountRole,
-  ImportSession
-} from "./types";
+
+type Player = any;
+type Snapshot = any;
+type AllianceSettings = any;
+type PlayerNote = any;
+type RoleOverride = any;
+type AccountRole = any;
+type ImportSession = any;
 
 // Custom Hooks
 import { useAllianceState } from "./hooks/useAllianceState";
@@ -16,10 +15,10 @@ import { useAnalytics } from "./hooks/useAnalytics";
 import { apiFetch, API_BASE } from "./apiConfig";
 
 // Layout & Navigation
-import Sidebar from "./components/Sidebar";
+import Sidebar from "./components/sidebar";
 
 // Tabs & Views
-import OverviewTab from "./components/OverviewTab";
+import OverviewTab from "./pages/OverviewTab";
 import PlayersTab from "./pages/PlayersTab";
 import RosterTab from "./pages/RosterTab";
 import ReviewTab from "./pages/ReviewTab";
