@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Activity, TrendingUp, FileText, Save, Trash2 } from "lucide-react";
-import { Player, Snapshot, PerformanceEvaluation, PerformanceTier, PlayerNote, AllianceSettings } from "../../types";
+import { Player, Snapshot, PerformanceEvaluation, PerformanceTier, PlayerNote, AllianceSettings, RoleOverride } from "../../types";
 import { formatWholeNumber } from "../../utils/Analytics";
 
 export interface PlayerProfileDetailProps {
@@ -11,9 +11,9 @@ export interface PlayerProfileDetailProps {
   playerLastActivity: any;
   playerNotes: PlayerNote[];
   settings?: AllianceSettings;
-  override?: any; 
-  onApplyOverride: (playerId: string, role: any, reason: string) => void; 
-  onRemoveOverride: (playerId: string) => void; 
+  override?: RoleOverride;
+  onApplyOverride?: (override: RoleOverride) => void;
+  onRemoveOverride?: (playerId: string) => void;
   onAddNote: (playerId: string, content: string) => void;
   onDeleteNote: (noteId: string) => void;
 }
