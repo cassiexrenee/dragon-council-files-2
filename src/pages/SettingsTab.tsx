@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { Save, CheckCircle, TrendingUp } from "lucide-react";
 import { AllianceSettings } from "../types";
-import ThemeSettingsSection from "../components/Settings/ThemeSettingsSection";
-import SeasonSettingsSection from "../components/Settings/SeasonSettingsSection";
+import ThemeSettingsSection from "../components/settings/ThemeSettingsSection";
+import SeasonSettingsSection from "../components/settings/SeasonSettingsSection";
 
 export interface ThemeOption {
   id: "slate" | "obsidian" | "sepia" | string;

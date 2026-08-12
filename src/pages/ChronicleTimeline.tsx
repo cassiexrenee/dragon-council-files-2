@@ -1,5 +1,5 @@
 import React from 'react';
-import ChronicleEventCard, { TimelineEvent } from '../components/Chronicle/ChronicleEventCard';
+import ChronicleEventCard, { TimelineEvent } from '../components/chronicle/ChronicleEventCard';
 
 export default function ChronicleTimeline() {
   const events: TimelineEvent[] = [

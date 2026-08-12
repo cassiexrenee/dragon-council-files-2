@@ -11,9 +11,9 @@ import {
   AllianceSettings
 } from "../types";
 import { getAggregatedPlayerSnapshot, formatWholeNumber } from "../utils/Analytics";
-import ReviewNeedsList from "../components/Review/ReviewNeedsList";
-import ReviewRecommendationsList from "../components/Review/ReviewRecommendationsList";
-import ReviewOverridesList from "../components/Review/ReviewOverridesList";
+import ReviewNeedsList from "../components/review/ReviewNeedsList";
+import ReviewRecommendationsList from "../components/review/ReviewRecommendationsList";
+import ReviewOverridesList from "../components/review/ReviewOverridesList";
 
 // FIX: Aligned prop names with App.tsx controller standard
 interface ReviewTabProps {

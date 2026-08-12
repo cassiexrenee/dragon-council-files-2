@@ -3,10 +3,10 @@ import { LayoutDashboard } from "lucide-react";
 // FIX: Added PlayerClassification and Recommendation to the import list
 import { Player, Snapshot, PerformanceEvaluation, AllianceSettings, PlayerClassification, Recommendation } from "../types";
 import { apiFetch } from "../apiConfig";
-import OverviewMetricsGrid from "../components/Overview/OverviewMetricsGrid";
-import OverviewAIAdvisorCard from "../components/Overview/OverviewAIAdvisorCard";
-import OverviewQueueSummary from "../components/Overview/OverviewQueueSummary";
-import OverviewQueueList from "../components/Overview/OverviewQueueList";
+import OverviewMetricsGrid from "../components/overview/OverviewMetricsGrid";
+import OverviewAIAdvisorCard from "../components/overview/OverviewAIAdvisorCard";
+import OverviewQueueSummary from "../components/overview/OverviewQueueSummary";
+import OverviewQueueList from "../components/overview/OverviewQueueList";
 
 // FIX: Added the missing props to the interface
 interface OverviewTabProps {
