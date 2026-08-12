@@ -8,6 +8,17 @@ export type EligibilityStatus = "ELIGIBLE" | "INELIGIBLE" | "PENDING" | "BELOW_B
 
 export type ComplianceStatus = "COMPLIANT" | "EXEMPLARY" | "NON_COMPLIANT" | "PARTIAL" | "NOT_APPLICABLE";
 
+// CHANGED: these values now match what classifyPlayer() actually assigns
+// (was: "STAY" | "REVIEW" | "LEAVE" | "VANGUARD")
+export type ClassificationStatus = "MANUAL_OVERRIDE" | "INSUFFICIENT_DATA" | "AUTO_CLASSIFIED" | "NEEDS_REVIEW";
+
+// CHANGED: added "LOW_ACTIVITY" and "UNKNOWN" (used in evaluatePerformance's fallback branch)
+export type ActivityState = "ACTIVE" | "LOW_ACTIVITY" | "INACTIVE" | "UNKNOWN";
+
+// CHANGED: these values now match what evaluatePerformance() actually assigns
+// (was: "PASS" | "FAIL" | "EXCEPTIONAL")
+export type EvaluationResultStatus = "NEEDS_REVIEW" | "MEETS_REQUIREMENTS" | "BELOW_REQUIREMENTS" | "EXCEEDS_EXPECTATIONS";
+
 export interface Player {
   characterId: string;
   currentName: string;
@@ -39,45 +50,99 @@ export interface Snapshot {
   createdAt: string;
 }
 
+// CHANGED: confidence -> confidenceScore, added status and evidence, createdAt -> evaluatedAt
 export interface PlayerClassification {
   id: string;
   playerId: string;
   snapshotId?: string | null;
   role: AccountRole;
-  confidence: number;
+  confidenceScore: number;
+  status: ClassificationStatus;
+  evidence: {
+    fighter: number;
+    support: number;
+    farm: number;
+    inactive: number;
+  };
   explanation: {
     summary: string;
     evidence: string[];
   };
-  createdAt: string;
+  evaluatedAt: string;
 }
 
+// NEW: matches the cohortPercentiles object built in evaluatePerformance()
+export interface CohortPercentiles {
+  pPower: number;
+  pMerits: number;
+  pDeaths: number;
+  pHealing: number;
+  pGathering: number;
+  pDonations: number;
+  pHelps: number;
+  pAssistance: number;
+  pBehemoths: number;
+  pBuildTime: number;
+  pDestructionTime: number;
+}
+
+// CHANGED: rewritten to match the object evaluatePerformance() actually returns
 export interface PerformanceEvaluation {
   id: string;
   playerId: string;
-  snapshotId?: string;
-  classificationId?: string;
+  classificationId: string;
+  snapshotId?: string | null;
+  activityState: ActivityState;
+  evaluationResult: EvaluationResultStatus;
+  roleRequirementsChecklist: RoleRequirementItem[];
+  activityEvidenceChecklist: ActivityEvidenceItem[];
+  cohortPercentiles: CohortPercentiles;
+  performanceScore: number;
   performanceTier: PerformanceTier;
-  complianceStatus: ComplianceStatus;
-  eligibilityStatus?: EligibilityStatus;
-  performanceScore?: number;
-  complianceMetrics?: {
-    meritRatioPassed: boolean;
-    deathsPassed: boolean;
-    powerPassed?: boolean;
-    activityPassed?: boolean;
+  combatScore: number;
+  contributionScore: number;
+  activityScore: number;
+  weights: {
+    combat: number;
+    contribution: number;
+    activity: number;
   };
+  explanation: {
+    summary: string;
+    positives: string[];
+    negatives: string[];
+  };
+  evaluatedAt: string;
+  eligibilityStatus: EligibilityStatus;
+  complianceStatus: ComplianceStatus;
   customScores?: {
     merits?: number;
     gathering?: number;
     deaths?: number;
+    healing?: number;
+    donations?: number;
+    buildTime?: number;
+    destructionTime?: number;
+    resourceAssistance?: number;
+    behemothWins?: number;
+    allianceHelp?: number;
   };
-  metrics: {
-    powerScore: number;
-    meritScore: number;
-    activityScore: number;
+  complianceMetrics?: {
+    powerPassed?: boolean;
+    meritRatioPassed: boolean;
+    deathsPassed: boolean;
+    activityPassed?: boolean;
+    powerVal?: number;
+    powerReq?: number;
+    meritVal?: number;
+    meritReq?: number;
+    meritPctOfPower?: number;
+    meritRatioPctTarget?: number;
+    deathsVal?: number;
+    deathsReq?: number;
+    activityVal?: string;
+    activityReq?: string;
   };
-  createdAt: string;
 }
 
 export interface Recommendation {
@@ -163,18 +228,23 @@ export interface AllianceSettings {
   };
   updatedAt: string;
 }
-export type ClassificationStatus = "STAY" | "REVIEW" | "LEAVE" | "VANGUARD";
-export type ActivityState = "ACTIVE" | "WARNING" | "INACTIVE";
-export type EvaluationResultStatus = "PASS" | "FAIL" | "EXCEPTIONAL";
 
+// CHANGED: rewritten to match { id, label, passed, actual, required } used in evaluatePerformance()
+// (was: { role, requirement, met })
 export interface RoleRequirementItem {
-  role: string;
-  requirement: string;
-  met: boolean;
+  id: string;
+  label: string;
+  passed: boolean;
+  actual: string;
+  required: string;
 }
 
+// CHANGED: rewritten to match { id, category, label, present, actualValue } used in evaluatePerformance()
+// (was: { date, action, value })
 export interface ActivityEvidenceItem {
-  date: string;
-  action: string;
-  value: number;
+  id: string;
+  category: string;
+  label: string;
+  present: boolean;
+  actualValue: string;
 }

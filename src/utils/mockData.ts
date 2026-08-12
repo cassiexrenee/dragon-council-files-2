@@ -19,7 +19,7 @@ export const initialAllianceSettings: AllianceSettings = {
     },
     thresholds: {
       below: 45,
-      meets: 75, // above this is exceeds, meets is 45-74
+      meets: 75,
     },
     seasonalPowerBaselines: {
       S1: 3000000,
@@ -32,6 +32,14 @@ export const initialAllianceSettings: AllianceSettings = {
     finalZoneOpenDate: "2026-07-17",
     seasonSummaryDate: "2026-07-29",
     seasonEndDate: "2026-07-31",
+    // ADDED: required by AllianceSettings, used in evaluatePerformance() to compute
+    // reqMerits/targetDeathsMin (defaults to meritRatioPct: 10, deathsMin: 50000 if omitted,
+    // but the type requires the field to be present)
+    complianceTargets: {
+      meritRatioPct: 10,
+      deathsMin: 50000,
+      activityRequired: true,
+    },
     customScoringWeights: {
       deaths: 20,
       merits: 20,
